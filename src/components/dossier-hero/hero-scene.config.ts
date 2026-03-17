@@ -85,7 +85,7 @@ export const LOOKAT_CURVE_POINTS: [number, number, number][] = [
 /* ─── Fisheye config ─── */
 export const FISHEYE_CONFIG = {
   startProgress: 0.84,
-  maxIntensity: 4,
+  maxIntensity: 2.5,
 };
 
 /* ─── Pointer parallax ranges (desktop) ─── */
