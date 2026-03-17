@@ -37,7 +37,10 @@ export function BookSequenceCanvas({ progress, frames, loaded }: Props) {
     const idx = currentFrame.current;
     if (idx === drawnFrame.current) return;
 
-    const ctx = canvas.getContext('2d');
+    if (!ctxRef.current) {
+      ctxRef.current = canvas.getContext('2d', { alpha: false });
+    }
+    const ctx = ctxRef.current;
     if (!ctx) return;
 
     const img = frames[idx];
