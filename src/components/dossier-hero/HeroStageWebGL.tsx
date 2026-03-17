@@ -186,6 +186,8 @@ const _lookAtPos = new THREE.Vector3();
 const _smoothCamPos = new THREE.Vector3(0, 3, 8);
 const _smoothLookAt = new THREE.Vector3(0, 1, 0);
 
+const isHighPerf = typeof navigator !== 'undefined' && (navigator.hardwareConcurrency ?? 4) >= 8;
+
 function SceneContent({ progress, phase, localProgress, onCriticalMissing }: StageProps) {
   const { pointerRef, isTouch, reducedMotion } = useExperience();
   const { camera, scene, invalidate } = useThree();
@@ -236,8 +238,8 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
     });
   }, [loaded, nodes]);
 
-  const grainEffect = useMemo(() => new GrainEffect(0.008), []);
-  useEffect(() => () => { grainEffect.dispose(); }, [grainEffect]);
+  const grainEffect = useMemo(() => isHighPerf ? new GrainEffect(0.008) : null, []);
+  useEffect(() => () => { grainEffect?.dispose(); }, [grainEffect]);
 
   useEffect(() => { invalidate(); }, [phase, progress, localProgress, invalidate]);
 
@@ -301,7 +303,7 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
   return (
     <>
       {import.meta.env.DEV && <Stats />}
-      <SoftShadows size={10} focus={0.5} samples={6} />
+      <SoftShadows size={10} focus={0.5} samples={4} />
       <Environment
         preset={ENVIRONMENT.preset}
         environmentIntensity={ENVIRONMENT.intensity}
@@ -378,10 +380,10 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
       )}
 
       <EffectComposer multisampling={0}>
-        <Vignette darkness={0.35} offset={0.35} />
+        {isHighPerf && <Vignette darkness={0.35} offset={0.35} />}
         <BrightnessContrast brightness={-0.03} contrast={0.08} />
         <HueSaturation hue={0} saturation={0.03} />
-        <primitive object={grainEffect} />
+        {isHighPerf && grainEffect && <primitive object={grainEffect} />}
       </EffectComposer>
     </>
   );

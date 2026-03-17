@@ -105,7 +105,7 @@ export const LIGHTING = {
     intensity: 2.4,
     color: '#fff4e0',
     position: [3, 5, 4] as [number, number, number],
-    shadowMapSize: 512,
+    shadowMapSize: 256,
     shadowBias: -0.0005,
   },
   fill: {
