@@ -7,7 +7,7 @@ import { GLB_URL, NODE_MAP, NODE_BEHAVIOUR, GROUP_ASSIGNMENT, type SemanticNodeK
 export type SemanticNodes = Partial<Record<SemanticNodeKey, Object3D>>;
 export type GroupedNodes = Record<SceneGroupId, Object3D[]>;
 
-const CRITICAL_NODES: SemanticNodeKey[] = ['dossier', 'pedestalBase'];
+const CRITICAL_NODES: SemanticNodeKey[] = ['levelBase', 'sudo'];
 
 interface GLBLoaderResult {
   nodes: SemanticNodes;
