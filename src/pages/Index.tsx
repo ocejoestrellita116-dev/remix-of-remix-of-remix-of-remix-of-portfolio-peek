@@ -12,6 +12,15 @@ const TechnicalWork = lazy(() => import('@/components/sections/TechnicalWork').t
 const Strengths = lazy(() => import('@/components/sections/Strengths').then(m => ({ default: m.Strengths })));
 const Contact = lazy(() => import('@/components/sections/Contact').then(m => ({ default: m.Contact })));
 
+/** Shimmer skeleton shown while the Three.js hero chunk loads */
+const HeroSkeleton = () => (
+  <div className="h-screen w-full bg-background flex flex-col items-center justify-center gap-6">
+    <div className="w-14 h-14 rounded-full bg-muted animate-pulse" />
+    <div className="w-40 h-[2px] bg-muted animate-pulse rounded-full" />
+    <div className="w-20 h-3 bg-muted/60 animate-pulse rounded" />
+  </div>
+);
+
 /** Invisible placeholder that reserves no space — sections animate in via SectionShell */
 const SectionFallback = () => <div className="min-h-[200px]" />;
 
