@@ -186,6 +186,8 @@ const _lookAtPos = new THREE.Vector3();
 const _smoothCamPos = new THREE.Vector3(0, 3, 8);
 const _smoothLookAt = new THREE.Vector3(0, 1, 0);
 
+const isHighPerf = typeof navigator !== 'undefined' && (navigator.hardwareConcurrency ?? 4) >= 8;
+
 function SceneContent({ progress, phase, localProgress, onCriticalMissing }: StageProps) {
   const { pointerRef, isTouch, reducedMotion } = useExperience();
   const { camera, scene, invalidate } = useThree();
@@ -236,8 +238,8 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
     });
   }, [loaded, nodes]);
 
-  const grainEffect = useMemo(() => new GrainEffect(0.008), []);
-  useEffect(() => () => { grainEffect.dispose(); }, [grainEffect]);
+  const grainEffect = useMemo(() => isHighPerf ? new GrainEffect(0.008) : null, []);
+  useEffect(() => () => { grainEffect?.dispose(); }, [grainEffect]);
 
   useEffect(() => { invalidate(); }, [phase, progress, localProgress, invalidate]);
 
