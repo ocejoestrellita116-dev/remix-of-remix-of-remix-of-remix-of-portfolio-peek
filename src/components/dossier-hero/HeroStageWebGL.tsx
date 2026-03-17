@@ -1,6 +1,6 @@
 import { useRef, useMemo, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Environment, SoftShadows } from '@react-three/drei';
+import { Environment, SoftShadows, Stats } from '@react-three/drei';
 import { EffectComposer, Vignette, BrightnessContrast, HueSaturation } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import type { DossierPhaseId } from './dossier-hero.types';
@@ -281,6 +281,7 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
 
   return (
     <>
+      {import.meta.env.DEV && <Stats />}
       <SoftShadows size={10} focus={0.5} samples={6} />
       <Environment
         preset={ENVIRONMENT.preset}
