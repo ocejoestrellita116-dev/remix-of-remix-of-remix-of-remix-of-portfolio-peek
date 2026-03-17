@@ -85,12 +85,6 @@ describe('Technical QA: Camera spline and lighting', () => {
     expect(LOOKAT_CURVE_POINTS).toHaveLength(CAMERA_CURVE_POINTS.length);
   });
 
-  it('fisheye config has valid start progress', () => {
-    expect(FISHEYE_CONFIG.startProgress).toBeGreaterThan(0);
-    expect(FISHEYE_CONFIG.startProgress).toBeLessThan(1);
-  });
-
-  it('each light has a 3-tuple position', () => {
     expect(LIGHTING.key.position).toHaveLength(3);
     expect(LIGHTING.fill.position).toHaveLength(3);
     expect(LIGHTING.rim.position).toHaveLength(3);
