@@ -247,8 +247,11 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
     const ptrX = isTouch ? 0.5 : p.lerpX;
     const ptrY = isTouch ? 0.5 : p.lerpY;
 
-    // 1. Sample camera position from spline based on scroll progress
-    const t = THREE.MathUtils.clamp(progress, 0, 1);
+    // 1. Sample camera position from spline with cinematic easing
+    const raw = THREE.MathUtils.clamp(progress, 0, 1);
+    const t = raw < 0.5
+      ? 4 * raw * raw * raw
+      : 1 - Math.pow(-2 * raw + 2, 3) / 2;
     cameraCurve.getPointAt(t, _camPos);
     lookAtCurve.getPointAt(t, _lookAtPos);
 
