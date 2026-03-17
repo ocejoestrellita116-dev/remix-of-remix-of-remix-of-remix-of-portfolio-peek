@@ -380,10 +380,10 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
       )}
 
       <EffectComposer multisampling={0}>
-        <Vignette darkness={0.35} offset={0.35} />
+        {isHighPerf && <Vignette darkness={0.35} offset={0.35} />}
         <BrightnessContrast brightness={-0.03} contrast={0.08} />
         <HueSaturation hue={0} saturation={0.03} />
-        <primitive object={grainEffect} />
+        {isHighPerf && grainEffect && <primitive object={grainEffect} />}
       </EffectComposer>
     </>
   );

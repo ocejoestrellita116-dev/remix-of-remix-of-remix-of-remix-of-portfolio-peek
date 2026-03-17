@@ -48,6 +48,8 @@ export function useGLBScene(): GLBLoaderResult {
         // Material enhancement: ensure PBR materials respond to environment
         if ((child as THREE.Mesh).isMesh) {
           const mesh = child as THREE.Mesh;
+          mesh.frustumCulled = true;
+          mesh.matrixAutoUpdate = false;
           const mat = mesh.material;
           if (mat && (mat as THREE.MeshStandardMaterial).isMeshStandardMaterial) {
             const stdMat = mat as THREE.MeshStandardMaterial;
