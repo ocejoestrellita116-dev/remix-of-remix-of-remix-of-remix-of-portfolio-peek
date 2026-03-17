@@ -1,6 +1,6 @@
 import React, { useRef, useMemo, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Environment, SoftShadows, Stats, Fisheye } from '@react-three/drei';
+import { Environment, SoftShadows, Stats } from '@react-three/drei';
 import { EffectComposer, Vignette, BrightnessContrast, HueSaturation } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import type { DossierPhaseId } from './dossier-hero.types';
@@ -11,7 +11,6 @@ import {
   CAMERA_DEFAULTS,
   CAMERA_CURVE_POINTS,
   LOOKAT_CURVE_POINTS,
-  FISHEYE_CONFIG,
   LIGHTING,
   ENVIRONMENT,
   NODE_BEHAVIOUR,
@@ -203,9 +202,6 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
     };
   }, []);
 
-  // Fisheye intensity state
-  const fisheyeIntensity = useRef(0);
-
   // Set scene background
   useEffect(() => {
     const root = document.documentElement;
@@ -251,8 +247,11 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
     const ptrX = isTouch ? 0.5 : p.lerpX;
     const ptrY = isTouch ? 0.5 : p.lerpY;
 
-    // 1. Sample camera position from spline based on scroll progress
-    const t = THREE.MathUtils.clamp(progress, 0, 1);
+    // 1. Sample camera position from spline with cinematic easing
+    const raw = THREE.MathUtils.clamp(progress, 0, 1);
+    const t = raw < 0.5
+      ? 4 * raw * raw * raw
+      : 1 - Math.pow(-2 * raw + 2, 3) / 2;
     cameraCurve.getPointAt(t, _camPos);
     lookAtCurve.getPointAt(t, _lookAtPos);
 
@@ -272,31 +271,25 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
     );
     camera.lookAt(_smoothLookAt.x, _smoothLookAt.y, _smoothLookAt.z);
 
-    // 2. Fisheye intensity ramp during handoff
-    const fisheyeTarget = progress > FISHEYE_CONFIG.startProgress
-      ? THREE.MathUtils.mapLinear(progress, FISHEYE_CONFIG.startProgress, 1, 0, FISHEYE_CONFIG.maxIntensity)
-      : 0;
-    fisheyeIntensity.current = THREE.MathUtils.lerp(fisheyeIntensity.current, fisheyeTarget, camLerp);
-
-    // 3. Object animations (phase-based, non-camera)
+    // 2. Object animations (phase-based, non-camera)
     const phaseIdx = PHASE_KEYS.indexOf(phase);
     const nextIdx = Math.min(phaseIdx + 1, PHASE_KEYS.length - 1);
     lerpStateInPlace(_targetState, PHASE_SCENE[phase], PHASE_SCENE[PHASE_KEYS[nextIdx]], localProgress);
     applyObjectMotion(currentState.current, _targetState, delta, heroArtifactRef, supportRef, ptrX, ptrY);
 
-    // 4. Pointer motion
+    // 3. Pointer motion
     if (!isTouch) {
       applyPointerMotion(sceneRef, nodes, ptrX, ptrY, currentState.current.sceneTiltMultiplier, originalPositions.current);
     }
 
-    // 5. Secondary motion (skip on odd frames for 120 FPS budget)
+    // 4. Secondary motion (skip on odd frames for 120 FPS budget)
     frameCount.current++;
     const isFullFrame = frameCount.current % 2 === 0;
     if (!reducedMotion && isFullFrame) {
       applySecondaryMotion(nodes, state.clock.elapsedTime, originalPositions.current, ptrX, ptrY);
     }
 
-    // 6. Invalidate when needed
+    // 5. Invalidate when needed
     const pointerMoved = Math.abs(ptrX - prevPtr.current.x) > 0.002 || Math.abs(ptrY - prevPtr.current.y) > 0.002;
     if (pointerMoved || !reducedMotion) invalidate();
     prevPtr.current.x = ptrX;
@@ -341,46 +334,23 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
         color={LIGHTING.rim.color}
       />
 
-      {/* Scene group — wrapped in Fisheye only when active */}
-      {fisheyeIntensity.current > 0.01 ? (
-        <Fisheye zoom={fisheyeIntensity.current}>
-          <group ref={sceneRef}>
-            <group ref={heroArtifactRef}>
-              {loaded && grouped.heroArtifact.map((node, i) => (
-                <primitive key={`hero-${i}`} object={node} />
-              ))}
-            </group>
-            <group ref={supportRef}>
-              {loaded && grouped.support.map((node, i) => (
-                <primitive key={`support-${i}`} object={node} />
-              ))}
-            </group>
-            <group>
-              {loaded && grouped.atmosphere.map((node, i) => (
-                <primitive key={`atmo-${i}`} object={node} />
-              ))}
-            </group>
-          </group>
-        </Fisheye>
-      ) : (
-        <group ref={sceneRef}>
-          <group ref={heroArtifactRef}>
-            {loaded && grouped.heroArtifact.map((node, i) => (
-              <primitive key={`hero-${i}`} object={node} />
-            ))}
-          </group>
-          <group ref={supportRef}>
-            {loaded && grouped.support.map((node, i) => (
-              <primitive key={`support-${i}`} object={node} />
-            ))}
-          </group>
-          <group>
-            {loaded && grouped.atmosphere.map((node, i) => (
-              <primitive key={`atmo-${i}`} object={node} />
-            ))}
-          </group>
+      <group ref={sceneRef}>
+        <group ref={heroArtifactRef}>
+          {loaded && grouped.heroArtifact.map((node, i) => (
+            <primitive key={`hero-${i}`} object={node} />
+          ))}
         </group>
-      )}
+        <group ref={supportRef}>
+          {loaded && grouped.support.map((node, i) => (
+            <primitive key={`support-${i}`} object={node} />
+          ))}
+        </group>
+        <group>
+          {loaded && grouped.atmosphere.map((node, i) => (
+            <primitive key={`atmo-${i}`} object={node} />
+          ))}
+        </group>
+      </group>
 
       <EffectComposer multisampling={0}>
         {isHighPerf && <Vignette darkness={0.35} offset={0.35} />}

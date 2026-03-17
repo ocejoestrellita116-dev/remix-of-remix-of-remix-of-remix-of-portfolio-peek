@@ -16,7 +16,7 @@ import {
   CAMERA_DEFAULTS,
   CAMERA_CURVE_POINTS,
   LOOKAT_CURVE_POINTS,
-  FISHEYE_CONFIG,
+  
   LIGHTING,
   type SemanticNodeKey,
 } from '@/components/dossier-hero/hero-scene.config';
@@ -83,11 +83,6 @@ describe('Technical QA: Camera spline and lighting', () => {
 
   it('lookAt curve has same number of points as camera curve', () => {
     expect(LOOKAT_CURVE_POINTS).toHaveLength(CAMERA_CURVE_POINTS.length);
-  });
-
-  it('fisheye config has valid start progress', () => {
-    expect(FISHEYE_CONFIG.startProgress).toBeGreaterThan(0);
-    expect(FISHEYE_CONFIG.startProgress).toBeLessThan(1);
   });
 
   it('each light has a 3-tuple position', () => {
