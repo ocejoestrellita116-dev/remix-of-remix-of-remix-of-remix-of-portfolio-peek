@@ -1,4 +1,4 @@
-import { useRef, useMemo, useEffect } from 'react';
+import React, { useRef, useMemo, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Environment, SoftShadows, Stats, Fisheye } from '@react-three/drei';
 import { EffectComposer, Vignette, BrightnessContrast, HueSaturation } from '@react-three/postprocessing';
@@ -394,7 +394,7 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
 
 /* ─── Exported Canvas wrapper ─── */
 
-export function HeroStageWebGL(props: StageProps) {
+export const HeroStageWebGL = React.memo(function HeroStageWebGL(props: StageProps) {
   return (
     <div className="absolute inset-0">
       <Canvas
@@ -420,4 +420,4 @@ export function HeroStageWebGL(props: StageProps) {
       </Canvas>
     </div>
   );
-}
+});
