@@ -1,22 +1,17 @@
 import type { DossierPhaseId } from './dossier-hero.types';
 
 /* ─── GLB Asset ─── */
-export const GLB_URL = '/hero/support-hero.glb';
+export const GLB_URL = '/hero/level-react-draco.glb';
 
 /* ─── Node name lookup: Blender name → semantic key ─── */
 export const NODE_MAP = {
-  DossierCore: 'dossier',
-  DossierCover: 'dossierCover',
-  SupportOrb: 'orb',
-  PedestalBase: 'pedestalBase',
-  PedestalMid: 'pedestalMid',
-  PedestalTop: 'pedestalTop',
-  TicketSlab_A: 'ticketA',
-  TicketSlab_B: 'ticketB',
-  TicketSlab_C: 'ticketC',
-  PortalBack: 'portal',
-  FrameRail_Right: 'railRight',
-  FrameRail_Upper: 'railUpper',
+  Level_1: 'levelBase',
+  Level_2: 'levelDetail',
+  Sudo: 'sudo',
+  SudoHead: 'sudoHead',
+  Camera: 'cameraProp',
+  Camera_Lens: 'cameraLens',
+  Cactus: 'cactus',
 } as const;
 
 export type SemanticNodeKey = (typeof NODE_MAP)[keyof typeof NODE_MAP];
@@ -25,18 +20,13 @@ export type SemanticNodeKey = (typeof NODE_MAP)[keyof typeof NODE_MAP];
 export type SceneGroupId = 'heroArtifact' | 'support' | 'atmosphere';
 
 export const GROUP_ASSIGNMENT: Record<SemanticNodeKey, SceneGroupId> = {
-  dossier: 'heroArtifact',
-  dossierCover: 'heroArtifact',
-  pedestalBase: 'heroArtifact',
-  pedestalMid: 'heroArtifact',
-  pedestalTop: 'heroArtifact',
-  orb: 'support',
-  ticketA: 'support',
-  ticketB: 'support',
-  ticketC: 'support',
-  railRight: 'support',
-  railUpper: 'support',
-  portal: 'atmosphere',
+  levelBase: 'heroArtifact',
+  levelDetail: 'heroArtifact',
+  sudo: 'heroArtifact',
+  sudoHead: 'heroArtifact',
+  cameraProp: 'support',
+  cameraLens: 'support',
+  cactus: 'support',
 };
 
 /* ─── Per-node behaviour flags ─── */
@@ -52,18 +42,13 @@ export interface NodeBehaviour {
 }
 
 export const NODE_BEHAVIOUR: Partial<Record<SemanticNodeKey, NodeBehaviour>> = {
-  dossier:      { castShadow: true },
-  dossierCover: { castShadow: true },
-  orb:          { castShadow: true, pointerTilt: true, float: { amp: 0.06, speed: 0.35 } },
-  pedestalBase: { receiveShadow: true },
-  pedestalMid:  { receiveShadow: true },
-  pedestalTop:  { receiveShadow: true, castShadow: true },
-  ticketA:      { castShadow: true, pointerShift: { x: 0.06, y: 0.04 } },
-  ticketB:      { castShadow: true, pointerShift: { x: 0.08, y: 0.05 } },
-  ticketC:      { castShadow: true, pointerShift: { x: 0.04, y: 0.03 } },
-  portal:       { receiveShadow: true },
-  railRight:    { pointerShift: { x: 0.03, y: 0.02 } },
-  railUpper:    { pointerShift: { x: 0.02, y: 0.04 } },
+  levelBase:   { receiveShadow: true },
+  levelDetail: { receiveShadow: true, castShadow: true },
+  sudo:        { castShadow: true, float: { amp: 0.04, speed: 0.4 } },
+  sudoHead:    { castShadow: true, pointerTilt: true },
+  cameraProp:  { castShadow: true, pointerShift: { x: 0.05, y: 0.03 } },
+  cameraLens:  { castShadow: true },
+  cactus:      { castShadow: true, float: { amp: 0.02, speed: 0.25 } },
 };
 
 /* ─── Camera defaults ─── */
@@ -71,7 +56,7 @@ export const CAMERA_DEFAULTS = {
   fov: 40,
   near: 0.1,
   far: 50,
-  position: [0, 1.2, 6] as [number, number, number],
+  position: [0, 3, 8] as [number, number, number],
 };
 
 /* ─── Pointer parallax ranges (desktop) ─── */
@@ -108,7 +93,7 @@ export const LIGHTING = {
 
 /* ─── Environment ─── */
 export const ENVIRONMENT = {
-  preset: 'studio' as const,
+  preset: 'city' as const,
   intensity: 0.4,
   backgroundBlurriness: 1,
   background: false,
@@ -116,29 +101,23 @@ export const ENVIRONMENT = {
   sceneBackgroundDark: '#121826',
 };
 
-/* ─── Phase scene states (extended with per-group motion) ─── */
+/* ─── Phase scene states ─── */
 export interface PhaseSceneState {
-  /* Camera rig */
   cameraZ: number;
   cameraY: number;
-  /* Pointer response */
   sceneTiltMultiplier: number;
-  /* Hero artifact group */
   heroArtifactY: number;
   heroArtifactScale: number;
-  /* Support group */
   supportY: number;
   supportSpread: number;
-  /* Atmosphere */
   atmosphereOpacity: number;
-  /* Orb emissive */
   orbGlow: number;
 }
 
 export const PHASE_SCENE: Record<DossierPhaseId, PhaseSceneState> = {
   closed: {
-    cameraZ: 6.0,
-    cameraY: 1.2,
+    cameraZ: 8.0,
+    cameraY: 3.0,
     sceneTiltMultiplier: 1.0,
     heroArtifactY: 0,
     heroArtifactScale: 1.0,
@@ -148,8 +127,8 @@ export const PHASE_SCENE: Record<DossierPhaseId, PhaseSceneState> = {
     orbGlow: 0.3,
   },
   open: {
-    cameraZ: 5.4,
-    cameraY: 1.1,
+    cameraZ: 6.5,
+    cameraY: 2.5,
     sceneTiltMultiplier: 1.2,
     heroArtifactY: 0,
     heroArtifactScale: 1.05,
@@ -159,8 +138,8 @@ export const PHASE_SCENE: Record<DossierPhaseId, PhaseSceneState> = {
     orbGlow: 0.6,
   },
   flight: {
-    cameraZ: 4.8,
-    cameraY: 1.4,
+    cameraZ: 5.0,
+    cameraY: 3.5,
     sceneTiltMultiplier: 0.8,
     heroArtifactY: 0.15,
     heroArtifactScale: 0.95,
@@ -170,8 +149,8 @@ export const PHASE_SCENE: Record<DossierPhaseId, PhaseSceneState> = {
     orbGlow: 1.0,
   },
   close: {
-    cameraZ: 5.2,
-    cameraY: 1.0,
+    cameraZ: 6.0,
+    cameraY: 2.2,
     sceneTiltMultiplier: 0.6,
     heroArtifactY: 0.08,
     heroArtifactScale: 0.9,
@@ -181,8 +160,8 @@ export const PHASE_SCENE: Record<DossierPhaseId, PhaseSceneState> = {
     orbGlow: 0.5,
   },
   handoff: {
-    cameraZ: 6.5,
-    cameraY: 1.5,
+    cameraZ: 9.0,
+    cameraY: 4.0,
     sceneTiltMultiplier: 0.3,
     heroArtifactY: 0.3,
     heroArtifactScale: 0.8,
