@@ -271,13 +271,7 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
     );
     camera.lookAt(_smoothLookAt.x, _smoothLookAt.y, _smoothLookAt.z);
 
-    // 2. Fisheye intensity ramp during handoff
-    const fisheyeTarget = progress > FISHEYE_CONFIG.startProgress
-      ? THREE.MathUtils.mapLinear(progress, FISHEYE_CONFIG.startProgress, 1, 0, FISHEYE_CONFIG.maxIntensity)
-      : 0;
-    fisheyeIntensity.current = THREE.MathUtils.lerp(fisheyeIntensity.current, fisheyeTarget, camLerp);
-
-    // 3. Object animations (phase-based, non-camera)
+    // 2. Object animations (phase-based, non-camera)
     const phaseIdx = PHASE_KEYS.indexOf(phase);
     const nextIdx = Math.min(phaseIdx + 1, PHASE_KEYS.length - 1);
     lerpStateInPlace(_targetState, PHASE_SCENE[phase], PHASE_SCENE[PHASE_KEYS[nextIdx]], localProgress);
