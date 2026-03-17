@@ -16,6 +16,7 @@ interface Props {
  */
 export function BookSequenceCanvas({ progress, frames, loaded }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const drawnFrame = useRef(-1);
   const currentFrame = useRef(0);
 
