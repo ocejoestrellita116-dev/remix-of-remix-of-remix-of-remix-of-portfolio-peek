@@ -90,12 +90,12 @@ export const FISHEYE_CONFIG = {
 
 /* ─── Pointer parallax ranges (desktop) ─── */
 export const POINTER_RANGES = {
-  sceneTiltY: 0.096,
-  sceneTiltX: 0.042,
-  artifactTiltY: 0.05,
-  artifactTiltX: 0.028,
-  cameraPointerX: 0.15,
-  cameraPointerY: 0.1,
+  sceneTiltY: 0.06,
+  sceneTiltX: 0.03,
+  artifactTiltY: 0.035,
+  artifactTiltX: 0.02,
+  cameraPointerX: 0.1,
+  cameraPointerY: 0.07,
 };
 
 /* ─── Lighting ─── */
@@ -190,4 +190,4 @@ export const PHASE_SCENE: Record<DossierPhaseId, PhaseSceneState> = {
 };
 
 /** Lerp speed for scene transitions per frame */
-export const SCENE_LERP = 0.06;
+export const SCENE_LERP = 0.08;
