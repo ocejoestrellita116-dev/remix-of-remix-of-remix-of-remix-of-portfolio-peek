@@ -289,7 +289,7 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
       applySecondaryMotion(nodes, state.clock.elapsedTime, originalPositions.current, ptrX, ptrY);
     }
 
-    // 6. Invalidate when needed
+    // 5. Invalidate when needed
     const pointerMoved = Math.abs(ptrX - prevPtr.current.x) > 0.002 || Math.abs(ptrY - prevPtr.current.y) > 0.002;
     if (pointerMoved || !reducedMotion) invalidate();
     prevPtr.current.x = ptrX;
