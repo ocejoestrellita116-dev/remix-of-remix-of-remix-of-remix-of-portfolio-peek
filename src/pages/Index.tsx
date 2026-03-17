@@ -1,5 +1,7 @@
 import { lazy, Suspense } from 'react';
-import { DossierHero } from '@/components/dossier-hero/DossierHero';
+
+// Lazy-load DossierHero to defer the entire Three.js bundle
+const DossierHero = lazy(() => import('@/components/dossier-hero/DossierHero').then(m => ({ default: m.DossierHero })));
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { CursorLayer } from '@/components/experience/CursorLayer';
