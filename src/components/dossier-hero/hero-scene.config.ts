@@ -43,12 +43,12 @@ export interface NodeBehaviour {
 
 export const NODE_BEHAVIOUR: Partial<Record<SemanticNodeKey, NodeBehaviour>> = {
   levelBase:   { receiveShadow: true },
-  levelDetail: { receiveShadow: true, castShadow: true },
   sudo:        { castShadow: true, float: { amp: 0.04, speed: 0.4 } },
   sudoHead:    { castShadow: true, pointerTilt: true },
   cameraProp:  { castShadow: true, pointerShift: { x: 0.05, y: 0.03 } },
-  cameraLens:  { castShadow: true },
   cactus:      { castShadow: true, float: { amp: 0.02, speed: 0.25 } },
+  pyramid:     { castShadow: true, float: { amp: 0.03, speed: 0.3 } },
+  reactLogo:   { castShadow: true, float: { amp: 0.05, speed: 0.35 } },
 };
 
 /* ─── Camera defaults ─── */
