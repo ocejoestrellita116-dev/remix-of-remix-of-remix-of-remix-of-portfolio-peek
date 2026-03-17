@@ -202,9 +202,6 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
     };
   }, []);
 
-  // Fisheye intensity state
-  const fisheyeIntensity = useRef(0);
-
   // Set scene background
   useEffect(() => {
     const root = document.documentElement;
