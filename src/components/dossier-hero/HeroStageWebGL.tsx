@@ -225,6 +225,7 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
 
   const sceneRef = useRef<THREE.Group>(null);
   const prevPtr = useRef({ x: 0.5, y: 0.5 });
+  const frameCount = useRef(0);
   const heroArtifactRef = useRef<THREE.Group>(null);
   const supportRef = useRef<THREE.Group>(null);
   const currentState = useRef<PhaseSceneState>({ ...INITIAL_STATE });
@@ -288,13 +289,15 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
       applyPointerMotion(sceneRef, nodes, ptrX, ptrY, currentState.current.sceneTiltMultiplier, originalPositions.current);
     }
 
-    // 5. Secondary motion
-    if (!reducedMotion) {
+    // 5. Secondary motion (skip on odd frames for 120 FPS budget)
+    frameCount.current++;
+    const isFullFrame = frameCount.current % 2 === 0;
+    if (!reducedMotion && isFullFrame) {
       applySecondaryMotion(nodes, state.clock.elapsedTime, originalPositions.current, ptrX, ptrY);
     }
 
     // 6. Invalidate when needed
-    const pointerMoved = Math.abs(ptrX - prevPtr.current.x) > 0.0005 || Math.abs(ptrY - prevPtr.current.y) > 0.0005;
+    const pointerMoved = Math.abs(ptrX - prevPtr.current.x) > 0.002 || Math.abs(ptrY - prevPtr.current.y) > 0.002;
     if (pointerMoved || !reducedMotion) invalidate();
     prevPtr.current.x = ptrX;
     prevPtr.current.y = ptrY;
