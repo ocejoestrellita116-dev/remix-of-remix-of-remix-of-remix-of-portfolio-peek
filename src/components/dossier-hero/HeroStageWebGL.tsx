@@ -277,7 +277,7 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
     lerpStateInPlace(_targetState, PHASE_SCENE[phase], PHASE_SCENE[PHASE_KEYS[nextIdx]], localProgress);
     applyObjectMotion(currentState.current, _targetState, delta, heroArtifactRef, supportRef, ptrX, ptrY);
 
-    // 4. Pointer motion
+    // 3. Pointer motion
     if (!isTouch) {
       applyPointerMotion(sceneRef, nodes, ptrX, ptrY, currentState.current.sceneTiltMultiplier, originalPositions.current);
     }
