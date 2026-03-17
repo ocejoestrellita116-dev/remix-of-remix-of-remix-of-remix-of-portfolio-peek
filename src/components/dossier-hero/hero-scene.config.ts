@@ -143,8 +143,6 @@ export interface PhaseSceneState {
 
 export const PHASE_SCENE: Record<DossierPhaseId, PhaseSceneState> = {
   closed: {
-    cameraZ: 8.0,
-    cameraY: 3.0,
     sceneTiltMultiplier: 1.0,
     heroArtifactY: 0,
     heroArtifactScale: 1.0,
@@ -154,8 +152,6 @@ export const PHASE_SCENE: Record<DossierPhaseId, PhaseSceneState> = {
     orbGlow: 0.3,
   },
   open: {
-    cameraZ: 6.5,
-    cameraY: 2.5,
     sceneTiltMultiplier: 1.2,
     heroArtifactY: 0,
     heroArtifactScale: 1.05,
@@ -165,8 +161,6 @@ export const PHASE_SCENE: Record<DossierPhaseId, PhaseSceneState> = {
     orbGlow: 0.6,
   },
   flight: {
-    cameraZ: 5.0,
-    cameraY: 3.5,
     sceneTiltMultiplier: 0.8,
     heroArtifactY: 0.15,
     heroArtifactScale: 0.95,
@@ -176,8 +170,6 @@ export const PHASE_SCENE: Record<DossierPhaseId, PhaseSceneState> = {
     orbGlow: 1.0,
   },
   close: {
-    cameraZ: 6.0,
-    cameraY: 2.2,
     sceneTiltMultiplier: 0.6,
     heroArtifactY: 0.08,
     heroArtifactScale: 0.9,
@@ -187,8 +179,6 @@ export const PHASE_SCENE: Record<DossierPhaseId, PhaseSceneState> = {
     orbGlow: 0.5,
   },
   handoff: {
-    cameraZ: 9.0,
-    cameraY: 4.0,
     sceneTiltMultiplier: 0.3,
     heroArtifactY: 0.3,
     heroArtifactScale: 0.8,
