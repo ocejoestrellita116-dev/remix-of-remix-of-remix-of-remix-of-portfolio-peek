@@ -1,4 +1,4 @@
-import { useRef, useMemo, useEffect } from 'react';
+import React, { useRef, useMemo, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Environment, SoftShadows, Stats, Fisheye } from '@react-three/drei';
 import { EffectComposer, Vignette, BrightnessContrast, HueSaturation } from '@react-three/postprocessing';
