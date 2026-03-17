@@ -282,7 +282,7 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
       applyPointerMotion(sceneRef, nodes, ptrX, ptrY, currentState.current.sceneTiltMultiplier, originalPositions.current);
     }
 
-    // 5. Secondary motion (skip on odd frames for 120 FPS budget)
+    // 4. Secondary motion (skip on odd frames for 120 FPS budget)
     frameCount.current++;
     const isFullFrame = frameCount.current % 2 === 0;
     if (!reducedMotion && isFullFrame) {
