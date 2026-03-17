@@ -5,13 +5,13 @@ export const GLB_URL = '/hero/level-react-draco.glb';
 
 /* ─── Node name lookup: Blender name → semantic key ─── */
 export const NODE_MAP = {
-  Level_1: 'levelBase',
-  Level_2: 'levelDetail',
+  Level: 'levelBase',
   Sudo: 'sudo',
   SudoHead: 'sudoHead',
-  Camera: 'cameraProp',
-  Camera_Lens: 'cameraLens',
   Cactus: 'cactus',
+  'Camera.001': 'cameraProp',
+  Pyramid: 'pyramid',
+  React: 'reactLogo',
 } as const;
 
 export type SemanticNodeKey = (typeof NODE_MAP)[keyof typeof NODE_MAP];
@@ -21,12 +21,12 @@ export type SceneGroupId = 'heroArtifact' | 'support' | 'atmosphere';
 
 export const GROUP_ASSIGNMENT: Record<SemanticNodeKey, SceneGroupId> = {
   levelBase: 'heroArtifact',
-  levelDetail: 'heroArtifact',
   sudo: 'heroArtifact',
   sudoHead: 'heroArtifact',
   cameraProp: 'support',
-  cameraLens: 'support',
   cactus: 'support',
+  pyramid: 'support',
+  reactLogo: 'atmosphere',
 };
 
 /* ─── Per-node behaviour flags ─── */
@@ -43,12 +43,12 @@ export interface NodeBehaviour {
 
 export const NODE_BEHAVIOUR: Partial<Record<SemanticNodeKey, NodeBehaviour>> = {
   levelBase:   { receiveShadow: true },
-  levelDetail: { receiveShadow: true, castShadow: true },
   sudo:        { castShadow: true, float: { amp: 0.04, speed: 0.4 } },
   sudoHead:    { castShadow: true, pointerTilt: true },
   cameraProp:  { castShadow: true, pointerShift: { x: 0.05, y: 0.03 } },
-  cameraLens:  { castShadow: true },
   cactus:      { castShadow: true, float: { amp: 0.02, speed: 0.25 } },
+  pyramid:     { castShadow: true, float: { amp: 0.03, speed: 0.3 } },
+  reactLogo:   { castShadow: true, float: { amp: 0.05, speed: 0.35 } },
 };
 
 /* ─── Camera defaults ─── */
