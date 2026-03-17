@@ -21,12 +21,12 @@ export type SceneGroupId = 'heroArtifact' | 'support' | 'atmosphere';
 
 export const GROUP_ASSIGNMENT: Record<SemanticNodeKey, SceneGroupId> = {
   levelBase: 'heroArtifact',
-  levelDetail: 'heroArtifact',
   sudo: 'heroArtifact',
   sudoHead: 'heroArtifact',
   cameraProp: 'support',
-  cameraLens: 'support',
   cactus: 'support',
+  pyramid: 'support',
+  reactLogo: 'atmosphere',
 };
 
 /* ─── Per-node behaviour flags ─── */
