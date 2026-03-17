@@ -225,6 +225,7 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
 
   const sceneRef = useRef<THREE.Group>(null);
   const prevPtr = useRef({ x: 0.5, y: 0.5 });
+  const frameCount = useRef(0);
   const heroArtifactRef = useRef<THREE.Group>(null);
   const supportRef = useRef<THREE.Group>(null);
   const currentState = useRef<PhaseSceneState>({ ...INITIAL_STATE });
