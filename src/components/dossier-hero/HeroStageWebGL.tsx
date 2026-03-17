@@ -396,7 +396,7 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
 
 export const HeroStageWebGL = React.memo(function HeroStageWebGL(props: StageProps) {
   return (
-    <div className="absolute inset-0">
+    <div className="absolute inset-0" style={{ willChange: 'transform', contain: 'strict' }}>
       <Canvas
         gl={{
           antialias: false,

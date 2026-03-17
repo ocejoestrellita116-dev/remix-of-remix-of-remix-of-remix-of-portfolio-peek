@@ -190,4 +190,4 @@ export const PHASE_SCENE: Record<DossierPhaseId, PhaseSceneState> = {
 };
 
 /** Lerp speed for scene transitions per frame */
-export const SCENE_LERP = 0.06;
+export const SCENE_LERP = 0.08;
