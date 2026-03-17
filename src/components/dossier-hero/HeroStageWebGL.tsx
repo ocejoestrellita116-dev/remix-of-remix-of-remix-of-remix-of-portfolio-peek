@@ -420,4 +420,4 @@ export const HeroStageWebGL = React.memo(function HeroStageWebGL(props: StagePro
       </Canvas>
     </div>
   );
-}
+});
