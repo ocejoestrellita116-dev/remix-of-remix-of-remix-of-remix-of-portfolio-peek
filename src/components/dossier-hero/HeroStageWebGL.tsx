@@ -394,7 +394,7 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
 
 /* ─── Exported Canvas wrapper ─── */
 
-export function HeroStageWebGL(props: StageProps) {
+export const HeroStageWebGL = React.memo(function HeroStageWebGL(props: StageProps) {
   return (
     <div className="absolute inset-0">
       <Canvas

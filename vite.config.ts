@@ -26,8 +26,10 @@ export default defineConfig(({ mode }) => ({
     include: ["@tanstack/react-query", "lenis", "three", "@react-three/fiber", "@react-three/drei"],
   },
   build: {
+    target: 'esnext',
     rollupOptions: {
       output: {
+        experimentalMinChunkSize: 10_000,
         manualChunks(id: string) {
           if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/') || id.includes('node_modules/react-router')) {
             return 'vendor-react';
