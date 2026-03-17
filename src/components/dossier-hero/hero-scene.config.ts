@@ -59,14 +59,43 @@ export const CAMERA_DEFAULTS = {
   position: [0, 3, 8] as [number, number, number],
 };
 
+/* ─── Camera fly-through spline (CatmullRomCurve3 control points) ─── */
+export const CAMERA_CURVE_POINTS: [number, number, number][] = [
+  [0, 3, 8],       // front (closed)
+  [3, 2.5, 6],     // right-front
+  [5, 3, 0],       // right side
+  [3, 3.5, -4],    // right-back
+  [0, 4, -5],      // back
+  [-3, 3.5, -2],   // left-back
+  [-4, 3, 3],      // left side
+  [0, 4, 9],       // pull back high (handoff)
+];
+
+export const LOOKAT_CURVE_POINTS: [number, number, number][] = [
+  [0, 1.0, 0],
+  [0, 0.9, 0],
+  [0, 0.8, 0],
+  [0, 1.0, 0],
+  [0, 1.2, 0],
+  [0, 1.1, 0],
+  [0, 0.9, 0],
+  [0, 1.0, 0],
+];
+
+/* ─── Fisheye config ─── */
+export const FISHEYE_CONFIG = {
+  startProgress: 0.84,
+  maxIntensity: 4,
+};
+
 /* ─── Pointer parallax ranges (desktop) ─── */
 export const POINTER_RANGES = {
   sceneTiltY: 0.096,
   sceneTiltX: 0.042,
   artifactTiltY: 0.05,
   artifactTiltX: 0.028,
-  cameraPointerX: 0.02,
-  cameraPointerY: 0.015,
+  cameraPointerX: 0.15,
+  cameraPointerY: 0.1,
 };
 
 /* ─── Lighting ─── */
@@ -101,10 +130,8 @@ export const ENVIRONMENT = {
   sceneBackgroundDark: '#121826',
 };
 
-/* ─── Phase scene states ─── */
+/* ─── Phase scene states (object animations only — camera is spline-driven) ─── */
 export interface PhaseSceneState {
-  cameraZ: number;
-  cameraY: number;
   sceneTiltMultiplier: number;
   heroArtifactY: number;
   heroArtifactScale: number;
@@ -116,8 +143,6 @@ export interface PhaseSceneState {
 
 export const PHASE_SCENE: Record<DossierPhaseId, PhaseSceneState> = {
   closed: {
-    cameraZ: 8.0,
-    cameraY: 3.0,
     sceneTiltMultiplier: 1.0,
     heroArtifactY: 0,
     heroArtifactScale: 1.0,
@@ -127,8 +152,6 @@ export const PHASE_SCENE: Record<DossierPhaseId, PhaseSceneState> = {
     orbGlow: 0.3,
   },
   open: {
-    cameraZ: 6.5,
-    cameraY: 2.5,
     sceneTiltMultiplier: 1.2,
     heroArtifactY: 0,
     heroArtifactScale: 1.05,
@@ -138,8 +161,6 @@ export const PHASE_SCENE: Record<DossierPhaseId, PhaseSceneState> = {
     orbGlow: 0.6,
   },
   flight: {
-    cameraZ: 5.0,
-    cameraY: 3.5,
     sceneTiltMultiplier: 0.8,
     heroArtifactY: 0.15,
     heroArtifactScale: 0.95,
@@ -149,8 +170,6 @@ export const PHASE_SCENE: Record<DossierPhaseId, PhaseSceneState> = {
     orbGlow: 1.0,
   },
   close: {
-    cameraZ: 6.0,
-    cameraY: 2.2,
     sceneTiltMultiplier: 0.6,
     heroArtifactY: 0.08,
     heroArtifactScale: 0.9,
@@ -160,8 +179,6 @@ export const PHASE_SCENE: Record<DossierPhaseId, PhaseSceneState> = {
     orbGlow: 0.5,
   },
   handoff: {
-    cameraZ: 9.0,
-    cameraY: 4.0,
     sceneTiltMultiplier: 0.3,
     heroArtifactY: 0.3,
     heroArtifactScale: 0.8,
