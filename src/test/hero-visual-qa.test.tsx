@@ -35,15 +35,14 @@ describe('Visual QA: Hero scene structure', () => {
     expect(LIGHTING.key.intensity).toBeGreaterThan(LIGHTING.rim.intensity);
   });
 
-  it('orb glow in closed phase is subtle (≤ 0.5)', () => {
+  it('orbGlow in closed phase is subtle (≤ 0.5)', () => {
     expect(PHASE_SCENE.closed.orbGlow).toBeLessThanOrEqual(0.5);
   });
 
-  it('orb behaviour has no emissive override', () => {
-    const orb = NODE_BEHAVIOUR.orb;
-    expect(orb).toBeDefined();
-    // Should only have float + shadow + pointerTilt, no emissive key
-    expect((orb as Record<string, unknown>)['emissive']).toBeUndefined();
+  it('sudo behaviour has float animation', () => {
+    const sudo = NODE_BEHAVIOUR.sudo;
+    expect(sudo).toBeDefined();
+    expect(sudo?.float).toBeDefined();
   });
 
   it('closed-phase content has headline and CTA', () => {
