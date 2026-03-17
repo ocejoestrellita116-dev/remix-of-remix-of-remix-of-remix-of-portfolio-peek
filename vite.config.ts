@@ -29,14 +29,21 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/') || id.includes('node_modules/react-router')) {
             return 'vendor-react';
           }
-          if (id.includes('node_modules/three') || id.includes('node_modules/@react-three')) {
-            return 'vendor-three';
-          }
+          // Postprocessing check BEFORE generic three check (more specific first)
           if (id.includes('node_modules/postprocessing') || id.includes('node_modules/@react-three/postprocessing')) {
             return 'vendor-postprocessing';
           }
+          if (id.includes('node_modules/three') || id.includes('node_modules/@react-three')) {
+            return 'vendor-three';
+          }
           if (id.includes('node_modules/@radix-ui')) {
             return 'vendor-ui';
+          }
+          if (id.includes('node_modules/gsap')) {
+            return 'vendor-gsap';
+          }
+          if (id.includes('node_modules/jszip')) {
+            return 'vendor-jszip';
           }
         },
       },
