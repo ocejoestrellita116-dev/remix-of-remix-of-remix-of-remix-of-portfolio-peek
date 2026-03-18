@@ -94,7 +94,7 @@ export const POINTER_RANGES = {
 
 /* ─── Lighting ─── */
 export const LIGHTING = {
-  ambient: { intensity: 0.55 },
+  ambient: { intensity: 0.65 },
   key: {
     intensity: 2.4,
     color: '#fff4e0',
