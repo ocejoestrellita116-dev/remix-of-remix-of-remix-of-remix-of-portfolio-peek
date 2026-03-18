@@ -41,6 +41,7 @@ const App = () => {  return (
       </ExperienceProvider>
     </TooltipProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;
