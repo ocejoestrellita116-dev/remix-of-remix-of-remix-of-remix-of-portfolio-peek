@@ -96,7 +96,7 @@ export const POINTER_RANGES = {
 export const LIGHTING = {
   ambient: { intensity: 0.55 },
   key: {
-    intensity: 2.4,
+    intensity: 2.0,
     color: '#fff4e0',
     position: [3, 5, 4] as [number, number, number],
     shadowMapSize: 256,
