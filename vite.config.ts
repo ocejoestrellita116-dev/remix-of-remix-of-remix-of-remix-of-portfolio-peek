@@ -44,9 +44,6 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('node_modules/@radix-ui')) {
             return 'vendor-ui';
           }
-          if (id.includes('node_modules/gsap')) {
-            return 'vendor-gsap';
-          }
           if (id.includes('node_modules/jszip')) {
             return 'vendor-jszip';
           }
