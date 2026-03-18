@@ -54,6 +54,21 @@ export function useGLBScene(): GLBLoaderResult {
             const stdMat = mat as THREE.MeshStandardMaterial;
             if (stdMat.envMapIntensity < 1) stdMat.envMapIntensity = 1;
             if (stdMat.roughness > 0.85) stdMat.roughness -= 0.1;
+
+            // Anisotropic filtering + texture quality on all map channels
+            const TEX_KEYS: (keyof THREE.MeshStandardMaterial)[] = [
+              'map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap', 'emissiveMap',
+            ];
+            for (const key of TEX_KEYS) {
+              const tex = stdMat[key] as THREE.Texture | null;
+              if (tex) {
+                tex.anisotropy = 16;
+                tex.minFilter = THREE.LinearMipmapLinearFilter;
+                tex.magFilter = THREE.LinearFilter;
+                tex.needsUpdate = true;
+              }
+            }
+
             stdMat.needsUpdate = true;
           }
         }

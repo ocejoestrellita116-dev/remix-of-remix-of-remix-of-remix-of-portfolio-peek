@@ -375,7 +375,7 @@ function SceneContent({ progressRef, phase, onCriticalMissing }: StageProps) {
         </group>
       </group>
 
-      <EffectComposer multisampling={0}>
+      <EffectComposer multisampling={4}>
         <BrightnessContrast brightness={-0.03} contrast={0.08} />
         <HueSaturation hue={0} saturation={0.03} />
       </EffectComposer>
