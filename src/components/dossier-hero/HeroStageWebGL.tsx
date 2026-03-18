@@ -260,7 +260,7 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
     const py = (ptrY - 0.5) * -POINTER_RANGES.cameraPointerY;
 
     // Smooth camera movement
-    const camLerp = 1 - Math.pow(1 - 0.08, delta * 60);
+    const camLerp = 1 - Math.pow(1 - 0.035, delta * 60);
     _smoothCamPos.lerp(_camPos, camLerp);
     _smoothLookAt.lerp(_lookAtPos, camLerp);
 
@@ -270,6 +270,11 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
       _smoothCamPos.z,
     );
     camera.lookAt(_smoothLookAt.x, _smoothLookAt.y, _smoothLookAt.z);
+
+    // Keep rendering while camera is still coasting toward target
+    const camDist = _smoothCamPos.distanceToSquared(_camPos);
+    const lookDist = _smoothLookAt.distanceToSquared(_lookAtPos);
+    if (camDist > 0.00001 || lookDist > 0.00001) invalidate();
 
     // 2. Object animations (phase-based, non-camera)
     const phaseIdx = PHASE_KEYS.indexOf(phase);
