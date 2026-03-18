@@ -84,12 +84,12 @@ export const LOOKAT_CURVE_POINTS: [number, number, number][] = [
 
 /* ─── Pointer parallax ranges (desktop) ─── */
 export const POINTER_RANGES = {
-  sceneTiltY: 0.06,
-  sceneTiltX: 0.03,
-  artifactTiltY: 0.035,
-  artifactTiltX: 0.02,
-  cameraPointerX: 0.1,
-  cameraPointerY: 0.07,
+  sceneTiltY: 0.08,
+  sceneTiltX: 0.04,
+  artifactTiltY: 0.05,
+  artifactTiltX: 0.03,
+  cameraPointerX: 0.14,
+  cameraPointerY: 0.10,
 };
 
 /* ─── Lighting ─── */
