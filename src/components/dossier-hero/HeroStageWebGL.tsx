@@ -369,11 +369,11 @@ export const HeroStageWebGL = React.memo(function HeroStageWebGL(props: StagePro
     <div className="absolute inset-0" style={{ willChange: 'transform', contain: 'strict' }}>
       <Canvas
         gl={{
-          antialias: false,
+          antialias: true,
           alpha: false,
           powerPreference: 'high-performance',
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.5,
+          toneMappingExposure: 1.6,
         }}
         camera={{
           fov: CAMERA_DEFAULTS.fov,
