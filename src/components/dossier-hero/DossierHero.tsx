@@ -9,7 +9,6 @@ import { SpatialLayer } from './SpatialLayer';
 import { ScrollProgressBar } from './ScrollProgressBar';
 import { EnterScreen } from '../experience/EnterScreen';
 import { useExperience } from '../experience/ExperienceProvider';
-import { useSound } from '@/hooks/use-sound';
 
 const ZIP_URL = '/frames/dossier-sequence.zip';
 
@@ -17,8 +16,6 @@ export function DossierHero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { progress, phase, localProgress } = useDossierProgress(containerRef);
   const { webglAvailable, setHeroActive } = useExperience();
-  const sound = useSound();
-  const prevPhaseRef = useRef(phase);
 
   const [glbReady, setGlbReady] = useState(false);
   const [glbFailed, setGlbFailed] = useState(false);
@@ -29,10 +26,8 @@ export function DossierHero() {
     }
   }, [webglAvailable]);
 
-  // Use WebGL path only if available and GLB didn't fail critical validation
   const useWebGL = webglAvailable && !glbFailed;
 
-  // Fallback: ZIP frame loader for non-WebGL path or GLB failure
   const { frames, loaded: framesLoaded, progress: frameLoadProgress } = useFrameLoader(
     useWebGL ? '' : ZIP_URL
   );
@@ -57,18 +52,7 @@ export function DossierHero() {
 
   useEffect(() => {
     setHeroActive(heroActive);
-    sound.setAmbient(heroActive);
-  }, [heroActive, setHeroActive, sound]);
-
-  // Phase change sound
-  useEffect(() => {
-    if (phase !== prevPhaseRef.current) {
-      prevPhaseRef.current = phase;
-      if (phase !== 'closed') {
-        sound.play('transition_down');
-      }
-    }
-  }, [phase, sound]);
+  }, [heroActive, setHeroActive]);
 
   return (
     <>
@@ -79,7 +63,6 @@ export function DossierHero() {
         className="relative"
         style={{ height: `${SCROLL_RUNWAY_VH}vh` }}
       >
-        {/* Sticky viewport — pinned while scrolling through runway */}
         <div className="sticky top-0 h-screen w-full overflow-hidden" style={{ background: 'hsl(var(--background))' }}>
 
           {useWebGL ? (
@@ -112,7 +95,6 @@ export function DossierHero() {
         </div>
       </div>
 
-      {/* Bridge gradient — soft dissolve from hero into first section */}
       <div
         className="relative -mt-px pointer-events-none"
         style={{

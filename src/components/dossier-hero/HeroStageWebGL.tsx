@@ -302,7 +302,7 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
       <SoftShadows size={10} focus={0.5} samples={4} />
       <Environment
         preset={ENVIRONMENT.preset}
-        environmentIntensity={ENVIRONMENT.intensity}
+        environmentIntensity={0.6}
         backgroundBlurriness={ENVIRONMENT.backgroundBlurriness}
         background={ENVIRONMENT.background}
       />

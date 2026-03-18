@@ -46,15 +46,15 @@ export function useGLBScene(): GLBLoaderResult {
         }
 
         // Material enhancement: ensure PBR materials respond to environment
-        if ((child as THREE.Mesh).isMesh) {
+          if ((child as THREE.Mesh).isMesh) {
           const mesh = child as THREE.Mesh;
           mesh.frustumCulled = true;
           mesh.matrixAutoUpdate = false;
           const mat = mesh.material;
           if (mat && (mat as THREE.MeshStandardMaterial).isMeshStandardMaterial) {
             const stdMat = mat as THREE.MeshStandardMaterial;
-            if (stdMat.envMapIntensity < 1) stdMat.envMapIntensity = 1;
-            if (stdMat.roughness > 0.85) stdMat.roughness -= 0.1;
+            stdMat.envMapIntensity = 1.5;
+            if (stdMat.roughness > 0.7) stdMat.roughness -= 0.15;
             stdMat.needsUpdate = true;
           }
         }
