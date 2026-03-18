@@ -229,11 +229,25 @@ function SceneContent({ progressRef, phase, onCriticalMissing }: StageProps) {
     });
   }, [loaded, nodes]);
 
-  // Invalidate when scroll progress changes (read from ref, not props)
+  // Invalidate on scroll and pointermove so frameloop="demand" wakes immediately
   useEffect(() => {
     const onScroll = () => invalidate();
+    let ptrRaf = 0;
+    const onPointerMove = () => {
+      if (!ptrRaf) {
+        ptrRaf = requestAnimationFrame(() => {
+          invalidate();
+          ptrRaf = 0;
+        });
+      }
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('pointermove', onPointerMove);
+      cancelAnimationFrame(ptrRaf);
+    };
   }, [invalidate]);
 
   useFrame((state, delta) => {
