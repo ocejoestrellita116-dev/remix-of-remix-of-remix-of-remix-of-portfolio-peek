@@ -1,9 +1,9 @@
 import React, { useRef, useMemo, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Environment, SoftShadows, Stats } from '@react-three/drei';
-import { EffectComposer, Vignette, BrightnessContrast, HueSaturation } from '@react-three/postprocessing';
+import { Environment } from '@react-three/drei';
+import { EffectComposer, BrightnessContrast, HueSaturation } from '@react-three/postprocessing';
 import * as THREE from 'three';
-import type { DossierPhaseId } from './dossier-hero.types';
+import type { DossierPhaseId, DossierProgressState } from './dossier-hero.types';
 import {
   PHASE_SCENE,
   SCENE_LERP,
@@ -19,14 +19,12 @@ import {
 } from './hero-scene.config';
 import { useGLBScene, type SemanticNodes } from './use-glb-loader';
 import { useExperience } from '../experience/ExperienceProvider';
-import { GrainEffect } from './GrainEffect';
 
 /* ─── Props ─── */
 
 interface StageProps {
-  progress: number;
+  progressRef: React.RefObject<DossierProgressState>;
   phase: DossierPhaseId;
-  localProgress: number;
   onCriticalMissing?: () => void;
 }
 
@@ -179,20 +177,16 @@ function applySecondaryMotion(
 
 /* ─── Scene content ─── */
 
-// Reusable vectors for spline sampling (zero-alloc in frame loop)
 const _camPos = new THREE.Vector3();
 const _lookAtPos = new THREE.Vector3();
 const _smoothCamPos = new THREE.Vector3(0, 3, 8);
 const _smoothLookAt = new THREE.Vector3(0, 1, 0);
 
-const isHighPerf = typeof navigator !== 'undefined' && (navigator.hardwareConcurrency ?? 4) >= 8;
-
-function SceneContent({ progress, phase, localProgress, onCriticalMissing }: StageProps) {
+function SceneContent({ progressRef, phase, onCriticalMissing }: StageProps) {
   const { pointerRef, isTouch, reducedMotion } = useExperience();
   const { camera, scene, invalidate } = useThree();
   const { nodes, grouped, loaded, criticalMissing } = useGLBScene();
 
-  // Build camera spline curves once
   const { cameraCurve, lookAtCurve } = useMemo(() => {
     const camPts = CAMERA_CURVE_POINTS.map(p => new THREE.Vector3(...p));
     const lookPts = LOOKAT_CURVE_POINTS.map(p => new THREE.Vector3(...p));
@@ -202,7 +196,6 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
     };
   }, []);
 
-  // Set scene background
   useEffect(() => {
     const root = document.documentElement;
     const update = () => {
@@ -226,6 +219,7 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
   const supportRef = useRef<THREE.Group>(null);
   const currentState = useRef<PhaseSceneState>({ ...INITIAL_STATE });
   const originalPositions = useRef<Map<string, THREE.Vector3>>(new Map());
+  const prevProgress = useRef(0);
 
   useEffect(() => {
     if (!loaded) return;
@@ -235,19 +229,27 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
     });
   }, [loaded, nodes]);
 
-  const grainEffect = useMemo(() => isHighPerf ? new GrainEffect(0.008) : null, []);
-  useEffect(() => () => { grainEffect?.dispose(); }, [grainEffect]);
-
-  useEffect(() => { invalidate(); }, [phase, progress, localProgress, invalidate]);
+  // Invalidate when scroll progress changes (read from ref, not props)
+  useEffect(() => {
+    const onScroll = () => invalidate();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [invalidate]);
 
   useFrame((state, delta) => {
     if (!loaded) return;
+
+    // Read progress from ref — no React re-render needed
+    const prog = progressRef.current;
+    const progress = prog.progress;
+    const localProgress = prog.localProgress;
+    const currentPhase = prog.phase;
 
     const p = pointerRef.current;
     const ptrX = isTouch ? 0.5 : p.lerpX;
     const ptrY = isTouch ? 0.5 : p.lerpY;
 
-    // 1. Sample camera position from spline with cinematic easing
+    // 1. Camera spline with cinematic easing
     const raw = THREE.MathUtils.clamp(progress, 0, 1);
     const t = raw < 0.5
       ? 4 * raw * raw * raw
@@ -255,11 +257,10 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
     cameraCurve.getPointAt(t, _camPos);
     lookAtCurve.getPointAt(t, _lookAtPos);
 
-    // Add pointer parallax offset
     const px = (ptrX - 0.5) * POINTER_RANGES.cameraPointerX;
     const py = (ptrY - 0.5) * -POINTER_RANGES.cameraPointerY;
 
-    // Smooth camera movement
+    // Smooth camera with inertia
     const camLerp = 1 - Math.pow(1 - 0.035, delta * 60);
     _smoothCamPos.lerp(_camPos, camLerp);
     _smoothLookAt.lerp(_lookAtPos, camLerp);
@@ -271,15 +272,10 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
     );
     camera.lookAt(_smoothLookAt.x, _smoothLookAt.y, _smoothLookAt.z);
 
-    // Keep rendering while camera is still coasting toward target
-    const camDist = _smoothCamPos.distanceToSquared(_camPos);
-    const lookDist = _smoothLookAt.distanceToSquared(_lookAtPos);
-    if (camDist > 0.00001 || lookDist > 0.00001) invalidate();
-
-    // 2. Object animations (phase-based, non-camera)
-    const phaseIdx = PHASE_KEYS.indexOf(phase);
+    // 2. Object animations
+    const phaseIdx = PHASE_KEYS.indexOf(currentPhase);
     const nextIdx = Math.min(phaseIdx + 1, PHASE_KEYS.length - 1);
-    lerpStateInPlace(_targetState, PHASE_SCENE[phase], PHASE_SCENE[PHASE_KEYS[nextIdx]], localProgress);
+    lerpStateInPlace(_targetState, PHASE_SCENE[currentPhase], PHASE_SCENE[PHASE_KEYS[nextIdx]], localProgress);
     applyObjectMotion(currentState.current, _targetState, delta, heroArtifactRef, supportRef, ptrX, ptrY);
 
     // 3. Pointer motion
@@ -287,7 +283,7 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
       applyPointerMotion(sceneRef, nodes, ptrX, ptrY, currentState.current.sceneTiltMultiplier, originalPositions.current);
     }
 
-    // 4. Secondary motion (skip on odd frames for 120 FPS budget)
+    // 4. Secondary motion (skip odd frames for budget)
     frameCount.current++;
     const isFullFrame = frameCount.current % 2 === 0;
     if (!reducedMotion && isFullFrame) {
@@ -296,15 +292,23 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
 
     // 5. Invalidate when needed
     const pointerMoved = Math.abs(ptrX - prevPtr.current.x) > 0.002 || Math.abs(ptrY - prevPtr.current.y) > 0.002;
-    if (pointerMoved || !reducedMotion) invalidate();
+    const camDist = _smoothCamPos.distanceToSquared(_camPos);
+    const lookDist = _smoothLookAt.distanceToSquared(_lookAtPos);
+    const cameraCoasting = camDist > 0.00001 || lookDist > 0.00001;
+    const progressChanged = Math.abs(progress - prevProgress.current) > 0.0005;
+    const hasFloatingNodes = !reducedMotion && isFullFrame;
+
+    if (pointerMoved || cameraCoasting || progressChanged || hasFloatingNodes) {
+      invalidate();
+    }
+
     prevPtr.current.x = ptrX;
     prevPtr.current.y = ptrY;
+    prevProgress.current = progress;
   });
 
   return (
     <>
-      {import.meta.env.DEV && <Stats />}
-      <SoftShadows size={10} focus={0.5} samples={4} />
       <Environment
         preset={ENVIRONMENT.preset}
         environmentIntensity={ENVIRONMENT.intensity}
@@ -358,10 +362,8 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
       </group>
 
       <EffectComposer multisampling={0}>
-        {isHighPerf && <Vignette darkness={0.35} offset={0.35} />}
         <BrightnessContrast brightness={-0.03} contrast={0.08} />
         <HueSaturation hue={0} saturation={0.03} />
-        {isHighPerf && grainEffect && <primitive object={grainEffect} />}
       </EffectComposer>
     </>
   );
@@ -386,9 +388,9 @@ export const HeroStageWebGL = React.memo(function HeroStageWebGL(props: StagePro
           far: CAMERA_DEFAULTS.far,
           position: CAMERA_DEFAULTS.position,
         }}
-        shadows="soft"
+        shadows
         style={{ position: 'absolute', inset: 0 }}
-        dpr={[1, 1.5]}
+        dpr={[1, 1]}
         frameloop="demand"
       >
         <SceneContent {...props} />
