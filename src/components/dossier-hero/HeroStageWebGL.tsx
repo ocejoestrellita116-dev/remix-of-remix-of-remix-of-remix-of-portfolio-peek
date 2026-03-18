@@ -383,7 +383,7 @@ export const HeroStageWebGL = React.memo(function HeroStageWebGL(props: StagePro
         }}
         shadows="soft"
         style={{ position: 'absolute', inset: 0 }}
-        dpr={[1, 1.5]}
+        dpr={[1.5, 2]}
         frameloop="demand"
       >
         <SceneContent {...props} />
