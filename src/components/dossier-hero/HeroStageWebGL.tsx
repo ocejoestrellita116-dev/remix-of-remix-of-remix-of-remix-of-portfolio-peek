@@ -113,7 +113,7 @@ export const HeroStageWebGL = React.memo(function HeroStageWebGL(props: StagePro
           alpha: false,
           powerPreference: 'high-performance',
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.5,
+          toneMappingExposure: 1.2,
         }}
         camera={{
           fov: CAMERA_DEFAULTS.fov,

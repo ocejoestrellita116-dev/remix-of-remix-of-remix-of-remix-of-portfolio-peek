@@ -144,12 +144,6 @@ function applySecondaryMotion(
       yOffset = Math.sin(elapsed * behaviour.float.speed * Math.PI * 2) * behaviour.float.amp;
     }
 
-    if (key === 'orb') {
-      const lagX = (orbLag.x - 0.5) * ORB_LAG_RANGE;
-      const lagY = (orbLag.y - 0.5) * -ORB_LAG_RANGE * 0.6;
-      node.position.x = orig.x + lagX;
-      node.position.z = orig.z + lagY;
-    }
 
     if (yOffset !== 0) {
       node.position.y = orig.y + yOffset;

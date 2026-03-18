@@ -54,6 +54,12 @@ export function useGLBScene(): GLBLoaderResult {
             const stdMat = mat as THREE.MeshStandardMaterial;
             if (stdMat.envMapIntensity < 1) stdMat.envMapIntensity = 1;
             if (stdMat.roughness > 0.85) stdMat.roughness -= 0.1;
+            if (stdMat.metalness > 0.85) stdMat.metalness = 0.85;
+
+            // Polygon offset to resolve Z-fighting on coplanar surfaces
+            stdMat.polygonOffset = true;
+            stdMat.polygonOffsetFactor = 1;
+            stdMat.polygonOffsetUnits = 1;
 
             // Anisotropic filtering + texture quality on all map channels
             const TEX_KEYS: (keyof THREE.MeshStandardMaterial)[] = [
