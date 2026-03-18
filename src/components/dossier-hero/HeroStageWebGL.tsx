@@ -260,7 +260,7 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
     const py = (ptrY - 0.5) * -POINTER_RANGES.cameraPointerY;
 
     // Smooth camera movement
-    const camLerp = 1 - Math.pow(1 - 0.08, delta * 60);
+    const camLerp = 1 - Math.pow(1 - 0.035, delta * 60);
     _smoothCamPos.lerp(_camPos, camLerp);
     _smoothLookAt.lerp(_lookAtPos, camLerp);
 
