@@ -115,9 +115,6 @@ function applyPointerMotion(
   }
 }
 
-const orbLag = { x: 0.5, y: 0.5 };
-const ORB_LAG_FACTOR = 0.03;
-const ORB_LAG_RANGE = 0.12;
 
 function applySecondaryMotion(
   nodes: SemanticNodes,
