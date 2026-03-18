@@ -376,7 +376,7 @@ export const HeroStageWebGL = React.memo(function HeroStageWebGL(props: StagePro
     <div className="absolute inset-0" style={{ willChange: 'transform', contain: 'strict' }}>
       <Canvas
         gl={{
-          antialias: false,
+          antialias: true,
           alpha: false,
           powerPreference: 'high-performance',
           toneMapping: THREE.ACESFilmicToneMapping,
@@ -390,7 +390,7 @@ export const HeroStageWebGL = React.memo(function HeroStageWebGL(props: StagePro
         }}
         shadows
         style={{ position: 'absolute', inset: 0 }}
-        dpr={[1, 1]}
+        dpr={[1, 1.5]}
         frameloop="demand"
       >
         <SceneContent {...props} />
