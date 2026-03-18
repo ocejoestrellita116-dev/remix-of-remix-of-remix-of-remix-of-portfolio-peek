@@ -22,7 +22,7 @@ function PageFallback() {
   );
 }
 
-const App = () => (
+const App = () => {  return (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <ExperienceProvider>
@@ -41,6 +41,7 @@ const App = () => (
       </ExperienceProvider>
     </TooltipProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;
