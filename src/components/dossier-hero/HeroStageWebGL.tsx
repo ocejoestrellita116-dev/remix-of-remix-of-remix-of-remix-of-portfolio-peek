@@ -322,8 +322,8 @@ function SceneContent({ progressRef, phase, onCriticalMissing }: StageProps) {
         intensity={LIGHTING.key.intensity}
         color={LIGHTING.key.color}
         castShadow
-        shadow-mapSize-width={LIGHTING.key.shadowMapSize}
-        shadow-mapSize-height={LIGHTING.key.shadowMapSize}
+        shadow-mapSize-width={512}
+        shadow-mapSize-height={512}
         shadow-camera-near={0.5}
         shadow-camera-far={20}
         shadow-camera-left={-4}
