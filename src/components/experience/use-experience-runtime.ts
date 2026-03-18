@@ -30,7 +30,7 @@ function detectReducedMotion(): boolean {
 
 /* ── Hook ── */
 
-const LERP_FACTOR = 0.08;
+const LERP_FACTOR = 0.14;
 
 const initialState: ExperienceState = {
   entered: false,
