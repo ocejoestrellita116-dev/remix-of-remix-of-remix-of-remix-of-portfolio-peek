@@ -14,16 +14,27 @@ function getPhase(progress: number): { phase: DossierPhaseId; localProgress: num
 
 /**
  * Scroll-driven progress for the dossier hero.
- * Uses a passive scroll listener — works with both Lenis (smooth) and native scroll.
- * No internal rAF loop; Lenis triggers real scroll events that fire this listener.
+ *
+ * Performance: progress/localProgress live in a ref to avoid React re-renders
+ * on every scroll tick. Only discrete phase changes trigger a setState.
+ * The WebGL scene reads `progressRef` directly inside useFrame.
  */
-export function useDossierProgress(containerRef: React.RefObject<HTMLElement | null>): DossierProgressState {
-  const [state, setState] = useState<DossierProgressState>({
+export function useDossierProgress(containerRef: React.RefObject<HTMLElement | null>) {
+  const [phaseState, setPhaseState] = useState<DossierProgressState>({
     progress: 0,
     phase: 'closed',
     localProgress: 0,
   });
+
+  /** Mutable ref updated every scroll tick — read this in useFrame for 0-cost access */
+  const progressRef = useRef<DossierProgressState>({
+    progress: 0,
+    phase: 'closed',
+    localProgress: 0,
+  });
+
   const prev = useRef(-1);
+  const prevPhase = useRef<DossierPhaseId>('closed');
 
   const calculate = useCallback(() => {
     const el = containerRef.current;
@@ -36,17 +47,25 @@ export function useDossierProgress(containerRef: React.RefObject<HTMLElement | n
     if (Math.abs(raw - prev.current) > 0.001) {
       prev.current = raw;
       const { phase, localProgress } = getPhase(raw);
-      setState({ progress: raw, phase, localProgress });
+
+      // Always update ref (zero-cost, no React render)
+      progressRef.current.progress = raw;
+      progressRef.current.phase = phase;
+      progressRef.current.localProgress = localProgress;
+
+      // Only setState when phase changes (discrete, ~5 times total)
+      if (phase !== prevPhase.current) {
+        prevPhase.current = phase;
+        setPhaseState({ progress: raw, phase, localProgress });
+      }
     }
   }, [containerRef]);
 
   useEffect(() => {
-    // Listen to scroll — Lenis fires real scroll events on the window
     window.addEventListener('scroll', calculate, { passive: true });
-    // Initial calculation
     calculate();
     return () => window.removeEventListener('scroll', calculate);
   }, [calculate]);
 
-  return state;
+  return { ...phaseState, progressRef };
 }
