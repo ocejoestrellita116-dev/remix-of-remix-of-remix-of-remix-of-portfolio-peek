@@ -54,8 +54,8 @@ export const NODE_BEHAVIOUR: Partial<Record<SemanticNodeKey, NodeBehaviour>> = {
 /* ─── Camera defaults ─── */
 export const CAMERA_DEFAULTS = {
   fov: 36,
-  near: 0.1,
-  far: 50,
+  near: 0.5,
+  far: 25,
   position: [0, 3, 8] as [number, number, number],
 };
 
@@ -96,11 +96,11 @@ export const POINTER_RANGES = {
 export const LIGHTING = {
   ambient: { intensity: 0.55 },
   key: {
-    intensity: 2.4,
+    intensity: 2.0,
     color: '#fff4e0',
     position: [3, 5, 4] as [number, number, number],
     shadowMapSize: 256,
-    shadowBias: -0.0005,
+    shadowBias: -0.002,
   },
   fill: {
     intensity: 0.5,

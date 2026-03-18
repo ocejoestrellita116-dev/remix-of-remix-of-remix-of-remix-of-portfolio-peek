@@ -115,42 +115,23 @@ function applyPointerMotion(
   }
 }
 
-const orbLag = { x: 0.5, y: 0.5 };
-const ORB_LAG_FACTOR = 0.03;
-const ORB_LAG_RANGE = 0.12;
 
 function applySecondaryMotion(
   nodes: SemanticNodes,
   elapsed: number,
   originals: Map<string, THREE.Vector3>,
-  ptrX: number,
-  ptrY: number,
 ) {
-  orbLag.x += (ptrX - orbLag.x) * ORB_LAG_FACTOR;
-  orbLag.y += (ptrY - orbLag.y) * ORB_LAG_FACTOR;
-
   const keys = getNodeKeys(nodes);
   for (let i = 0, len = keys.length; i < len; i++) {
     const key = keys[i];
     const node = nodes[key as SemanticNodeKey];
     if (!node) continue;
     const behaviour = NODE_BEHAVIOUR[key as SemanticNodeKey];
-    if (!behaviour) continue;
+    if (!behaviour?.float) continue;
     const orig = originals.get(key);
     if (!orig) continue;
 
-    let yOffset = 0;
-    if (behaviour.float) {
-      yOffset = Math.sin(elapsed * behaviour.float.speed * Math.PI * 2) * behaviour.float.amp;
-    }
-
-    if (key === 'orb') {
-      const lagX = (orbLag.x - 0.5) * ORB_LAG_RANGE;
-      const lagY = (orbLag.y - 0.5) * -ORB_LAG_RANGE * 0.6;
-      node.position.x = orig.x + lagX;
-      node.position.z = orig.z + lagY;
-    }
-
+    const yOffset = Math.sin(elapsed * behaviour.float.speed * Math.PI * 2) * behaviour.float.amp;
     if (yOffset !== 0) {
       node.position.y = orig.y + yOffset;
     }
@@ -206,7 +187,7 @@ export function useSceneAnimation({ nodes, loaded }: UseSceneAnimationParams) {
       frameCount.current++;
       const isFullFrame = frameCount.current % 2 === 0;
       if (!reducedMotion && isFullFrame) {
-        applySecondaryMotion(nodes, elapsed, originalPositions.current, ptrX, ptrY);
+        applySecondaryMotion(nodes, elapsed, originalPositions.current);
       }
 
       return isFullFrame;
