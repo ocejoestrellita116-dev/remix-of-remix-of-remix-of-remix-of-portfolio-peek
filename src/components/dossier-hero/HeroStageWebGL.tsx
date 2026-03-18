@@ -305,7 +305,7 @@ function SceneContent({ progressRef, phase, onCriticalMissing }: StageProps) {
     }
 
     // 5. Invalidate when needed
-    const pointerMoved = Math.abs(ptrX - prevPtr.current.x) > 0.002 || Math.abs(ptrY - prevPtr.current.y) > 0.002;
+    const pointerMoved = Math.abs(ptrX - prevPtr.current.x) > 0.0008 || Math.abs(ptrY - prevPtr.current.y) > 0.0008;
     const camDist = _smoothCamPos.distanceToSquared(_camPos);
     const lookDist = _smoothLookAt.distanceToSquared(_lookAtPos);
     const cameraCoasting = camDist > 0.00001 || lookDist > 0.00001;

@@ -4,12 +4,16 @@ import { ExperienceContext } from './ExperienceProvider';
 const SIZE = { default: 24, hero: 36, hover: 48, drag: 32, hidden: 0 };
 const GLOW_SIZE = 56;
 const DOT_SIZE = 4;
+const SETTLE_THRESHOLD = 0.3; // px — stop looping when cursor barely moves
 
 export function CursorLayer() {
   const ctx = useContext(ExperienceContext);
   const containerRef = useRef<HTMLDivElement>(null);
   const viewport = useRef({ w: typeof window !== 'undefined' ? window.innerWidth : 1, h: typeof window !== 'undefined' ? window.innerHeight : 1 });
   const rafId = useRef<number>(0);
+  const running = useRef(false);
+  const prevX = useRef(0);
+  const prevY = useRef(0);
 
   useEffect(() => {
     const update = () => {
@@ -30,23 +34,45 @@ export function CursorLayer() {
     return () => { delete document.documentElement.dataset.cursorVisible; };
   }, [isTouch, reducedMotion]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // rAF loop — drive transform from pointerRef, zero re-renders
+  // On-demand rAF loop — auto-stops when settled
   const tick = useCallback(() => {
     if (!ctx || !containerRef.current) {
-      rafId.current = requestAnimationFrame(tick);
+      running.current = false;
       return;
     }
     const p = ctx.pointerRef.current;
     const x = p.lerpX * viewport.current.w;
     const y = p.lerpY * viewport.current.h;
     containerRef.current.style.transform = `translate(${x}px, ${y}px)`;
+
+    // Check if settled
+    const dx = Math.abs(x - prevX.current);
+    const dy = Math.abs(y - prevY.current);
+    prevX.current = x;
+    prevY.current = y;
+
+    if (dx < SETTLE_THRESHOLD && dy < SETTLE_THRESHOLD) {
+      running.current = false;
+      return; // stop loop
+    }
     rafId.current = requestAnimationFrame(tick);
   }, [ctx]);
 
+  // Wake loop on pointermove
   useEffect(() => {
     if (isTouch || reducedMotion || !ctx) return;
-    rafId.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafId.current);
+    const wake = () => {
+      if (!running.current) {
+        running.current = true;
+        rafId.current = requestAnimationFrame(tick);
+      }
+    };
+    window.addEventListener('pointermove', wake, { passive: true });
+    return () => {
+      window.removeEventListener('pointermove', wake);
+      cancelAnimationFrame(rafId.current);
+      running.current = false;
+    };
   }, [isTouch, reducedMotion, ctx, tick]);
 
   if (!ctx || isTouch || reducedMotion) return null;
