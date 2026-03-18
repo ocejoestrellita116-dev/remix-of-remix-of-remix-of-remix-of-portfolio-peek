@@ -30,7 +30,7 @@ function detectReducedMotion(): boolean {
 
 /* ── Hook ── */
 
-const LERP_FACTOR = 0.08;
+const LERP_FACTOR = 0.14;
 
 const initialState: ExperienceState = {
   entered: false,
@@ -87,15 +87,21 @@ export function useExperienceRuntime(): ExperienceContextValue {
 
   /* ── Unified rAF tick — drives Lenis + pointer lerp (NO setState) ── */
   useEffect(() => {
+    let lastTime = performance.now();
     const tick = (time: number) => {
+      // Delta-normalised lerp so responsiveness is consistent regardless of FPS
+      const dt = Math.min((time - lastTime) / 16.667, 3); // cap at 3 frames worth
+      lastTime = time;
+
       // 1. Drive Lenis smooth scroll
       lenisTick(time);
 
-      // 2. Pointer lerp — mutate ref directly
+      // 2. Pointer lerp — mutate ref directly, delta-normalised
       const p = pointerRef.current;
       if (!reducedRef.current) {
-        p.lerpX += (p.x - p.lerpX) * LERP_FACTOR;
-        p.lerpY += (p.y - p.lerpY) * LERP_FACTOR;
+        const f = 1 - Math.pow(1 - LERP_FACTOR, dt);
+        p.lerpX += (p.x - p.lerpX) * f;
+        p.lerpY += (p.y - p.lerpY) * f;
       } else {
         p.lerpX = p.x;
         p.lerpY = p.y;

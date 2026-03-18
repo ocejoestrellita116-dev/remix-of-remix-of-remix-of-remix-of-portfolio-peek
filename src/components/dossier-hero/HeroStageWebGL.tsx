@@ -229,11 +229,25 @@ function SceneContent({ progressRef, phase, onCriticalMissing }: StageProps) {
     });
   }, [loaded, nodes]);
 
-  // Invalidate when scroll progress changes (read from ref, not props)
+  // Invalidate on scroll and pointermove so frameloop="demand" wakes immediately
   useEffect(() => {
     const onScroll = () => invalidate();
+    let ptrRaf = 0;
+    const onPointerMove = () => {
+      if (!ptrRaf) {
+        ptrRaf = requestAnimationFrame(() => {
+          invalidate();
+          ptrRaf = 0;
+        });
+      }
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('pointermove', onPointerMove);
+      cancelAnimationFrame(ptrRaf);
+    };
   }, [invalidate]);
 
   useFrame((state, delta) => {
@@ -291,7 +305,7 @@ function SceneContent({ progressRef, phase, onCriticalMissing }: StageProps) {
     }
 
     // 5. Invalidate when needed
-    const pointerMoved = Math.abs(ptrX - prevPtr.current.x) > 0.002 || Math.abs(ptrY - prevPtr.current.y) > 0.002;
+    const pointerMoved = Math.abs(ptrX - prevPtr.current.x) > 0.0008 || Math.abs(ptrY - prevPtr.current.y) > 0.0008;
     const camDist = _smoothCamPos.distanceToSquared(_camPos);
     const lookDist = _smoothLookAt.distanceToSquared(_lookAtPos);
     const cameraCoasting = camDist > 0.00001 || lookDist > 0.00001;

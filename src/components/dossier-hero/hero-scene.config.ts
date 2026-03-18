@@ -53,7 +53,7 @@ export const NODE_BEHAVIOUR: Partial<Record<SemanticNodeKey, NodeBehaviour>> = {
 
 /* ─── Camera defaults ─── */
 export const CAMERA_DEFAULTS = {
-  fov: 40,
+  fov: 36,
   near: 0.1,
   far: 50,
   position: [0, 3, 8] as [number, number, number],
@@ -61,13 +61,13 @@ export const CAMERA_DEFAULTS = {
 
 /* ─── Camera fly-through spline (CatmullRomCurve3 control points) ─── */
 export const CAMERA_CURVE_POINTS: [number, number, number][] = [
-  [0, 2.8, 7],       // front — comfortable overview
-  [2.2, 2.5, 5.5],   // right-front — gentle arc
-  [3.5, 2.8, 2.5],   // right side — pulled back from objects
-  [3, 3.8, -2],      // right-back — rise up
-  [0, 4.5, -3.5],    // back — high overview
-  [-2.5, 2.5, -0.5], // left-back — gentle descent
-  [-3, 2.5, 4],      // left side — safe distance
+  [0, 3.0, 7.5],     // front — comfortable overview
+  [2.0, 2.8, 6.0],   // right-front — gentle arc (pulled back)
+  [3.2, 3.0, 3.5],   // right side — safe distance from objects
+  [2.8, 3.8, -1.5],  // right-back — rise up
+  [0, 4.5, -3.0],    // back — high overview
+  [-2.2, 2.8, 0],    // left-back — gentle descent
+  [-2.8, 2.8, 4.5],  // left side — safe distance
   [0, 3.5, 8.5],     // pull back high (handoff)
 ];
 
@@ -84,12 +84,12 @@ export const LOOKAT_CURVE_POINTS: [number, number, number][] = [
 
 /* ─── Pointer parallax ranges (desktop) ─── */
 export const POINTER_RANGES = {
-  sceneTiltY: 0.06,
-  sceneTiltX: 0.03,
-  artifactTiltY: 0.035,
-  artifactTiltX: 0.02,
-  cameraPointerX: 0.1,
-  cameraPointerY: 0.07,
+  sceneTiltY: 0.08,
+  sceneTiltX: 0.04,
+  artifactTiltY: 0.05,
+  artifactTiltX: 0.03,
+  cameraPointerX: 0.14,
+  cameraPointerY: 0.10,
 };
 
 /* ─── Lighting ─── */
