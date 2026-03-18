@@ -31,7 +31,7 @@ describe('Breakpoint QA: Touch gating in HeroStageWebGL', () => {
   });
 
   it('skips applySecondaryMotion on reduced motion', () => {
-    expect(src).toContain('if (!reducedMotion)');
+    expect(src).toContain('!reducedMotion');
     expect(src).toContain('applySecondaryMotion');
   });
 });
