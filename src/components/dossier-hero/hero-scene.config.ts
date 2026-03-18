@@ -61,13 +61,13 @@ export const CAMERA_DEFAULTS = {
 
 /* ─── Camera fly-through spline (CatmullRomCurve3 control points) ─── */
 export const CAMERA_CURVE_POINTS: [number, number, number][] = [
-  [0, 2.8, 7],       // front — comfortable overview
-  [2.2, 2.5, 5.5],   // right-front — gentle arc
-  [3.5, 2.8, 2.5],   // right side — pulled back from objects
-  [3, 3.8, -2],      // right-back — rise up
-  [0, 4.5, -3.5],    // back — high overview
-  [-2.5, 2.5, -0.5], // left-back — gentle descent
-  [-3, 2.5, 4],      // left side — safe distance
+  [0, 3.0, 7.5],     // front — comfortable overview
+  [2.0, 2.8, 6.0],   // right-front — gentle arc (pulled back)
+  [3.2, 3.0, 3.5],   // right side — safe distance from objects
+  [2.8, 3.8, -1.5],  // right-back — rise up
+  [0, 4.5, -3.0],    // back — high overview
+  [-2.2, 2.8, 0],    // left-back — gentle descent
+  [-2.8, 2.8, 4.5],  // left side — safe distance
   [0, 3.5, 8.5],     // pull back high (handoff)
 ];
 
