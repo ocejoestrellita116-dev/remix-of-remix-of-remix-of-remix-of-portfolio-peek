@@ -271,6 +271,11 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
     );
     camera.lookAt(_smoothLookAt.x, _smoothLookAt.y, _smoothLookAt.z);
 
+    // Keep rendering while camera is still coasting toward target
+    const camDist = _smoothCamPos.distanceToSquared(_camPos);
+    const lookDist = _smoothLookAt.distanceToSquared(_lookAtPos);
+    if (camDist > 0.00001 || lookDist > 0.00001) invalidate();
+
     // 2. Object animations (phase-based, non-camera)
     const phaseIdx = PHASE_KEYS.indexOf(phase);
     const nextIdx = Math.min(phaseIdx + 1, PHASE_KEYS.length - 1);
