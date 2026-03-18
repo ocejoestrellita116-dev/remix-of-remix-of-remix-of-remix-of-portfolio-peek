@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useSound } from '@/hooks/use-sound';
 
 export function ThemeToggle() {
   const [dark, setDark] = useState(false);
-  const sound = useSound();
 
   useEffect(() => {
     const stored = localStorage.getItem('theme');
@@ -18,7 +16,6 @@ export function ThemeToggle() {
     setDark(next);
     document.documentElement.classList.toggle('dark', next);
     localStorage.setItem('theme', next ? 'dark' : 'light');
-    sound.play(next ? 'toggle_on' : 'toggle_off');
   };
 
   return (

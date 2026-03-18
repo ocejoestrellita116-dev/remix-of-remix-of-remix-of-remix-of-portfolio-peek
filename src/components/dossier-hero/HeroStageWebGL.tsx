@@ -302,7 +302,7 @@ function SceneContent({ progress, phase, localProgress, onCriticalMissing }: Sta
       <SoftShadows size={10} focus={0.5} samples={4} />
       <Environment
         preset={ENVIRONMENT.preset}
-        environmentIntensity={ENVIRONMENT.intensity}
+        environmentIntensity={0.6}
         backgroundBlurriness={ENVIRONMENT.backgroundBlurriness}
         background={ENVIRONMENT.background}
       />
@@ -369,11 +369,11 @@ export const HeroStageWebGL = React.memo(function HeroStageWebGL(props: StagePro
     <div className="absolute inset-0" style={{ willChange: 'transform', contain: 'strict' }}>
       <Canvas
         gl={{
-          antialias: false,
+          antialias: true,
           alpha: false,
           powerPreference: 'high-performance',
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.5,
+          toneMappingExposure: 1.6,
         }}
         camera={{
           fov: CAMERA_DEFAULTS.fov,
@@ -383,7 +383,7 @@ export const HeroStageWebGL = React.memo(function HeroStageWebGL(props: StagePro
         }}
         shadows="soft"
         style={{ position: 'absolute', inset: 0 }}
-        dpr={[1, 1.5]}
+        dpr={[1.5, 2]}
         frameloop="demand"
       >
         <SceneContent {...props} />
