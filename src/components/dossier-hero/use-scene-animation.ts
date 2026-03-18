@@ -187,7 +187,7 @@ export function useSceneAnimation({ nodes, loaded }: UseSceneAnimationParams) {
       frameCount.current++;
       const isFullFrame = frameCount.current % 2 === 0;
       if (!reducedMotion && isFullFrame) {
-        applySecondaryMotion(nodes, elapsed, originalPositions.current, ptrX, ptrY);
+        applySecondaryMotion(nodes, elapsed, originalPositions.current);
       }
 
       return isFullFrame;
