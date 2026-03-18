@@ -54,8 +54,8 @@ export const NODE_BEHAVIOUR: Partial<Record<SemanticNodeKey, NodeBehaviour>> = {
 /* ─── Camera defaults ─── */
 export const CAMERA_DEFAULTS = {
   fov: 36,
-  near: 0.1,
-  far: 50,
+  near: 0.5,
+  far: 25,
   position: [0, 3, 8] as [number, number, number],
 };
 
