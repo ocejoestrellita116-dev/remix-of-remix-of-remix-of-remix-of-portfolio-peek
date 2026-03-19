@@ -56,17 +56,15 @@ export function useGLBScene(): GLBLoaderResult {
             if (stdMat.roughness > 0.85) stdMat.roughness -= 0.1;
             if (stdMat.metalness > 0.85) stdMat.metalness = 0.85;
 
-            // Differentiated polygon offset by group to resolve Z-fighting
-            const groupId = GROUP_ASSIGNMENT[semantic];
+            // Force front-side only rendering to eliminate back-face white edges
+            stdMat.side = THREE.FrontSide;
+
+            // Per-node polygon offset from config to resolve Z-fighting
+            const nodeBehaviour = NODE_BEHAVIOUR[semantic];
+            const offsetFactor = nodeBehaviour?.polygonOffsetFactor ?? 0;
             stdMat.polygonOffset = true;
+            stdMat.polygonOffsetFactor = offsetFactor;
             stdMat.polygonOffsetUnits = 1;
-            if (groupId === 'heroArtifact') {
-              stdMat.polygonOffsetFactor = 0;
-            } else if (groupId === 'support') {
-              stdMat.polygonOffsetFactor = 2;
-            } else {
-              stdMat.polygonOffsetFactor = 3;
-            }
 
             // Anisotropic filtering + texture quality on all map channels
             const TEX_KEYS: (keyof THREE.MeshStandardMaterial)[] = [
