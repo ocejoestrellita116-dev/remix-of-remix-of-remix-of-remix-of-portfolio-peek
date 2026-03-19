@@ -41,6 +41,8 @@ export interface NodeBehaviour {
   pointerShift?: { x: number; y: number };
   /** Per-node polygon offset factor to resolve Z-fighting */
   polygonOffsetFactor?: number;
+  /** Static world-space offset to avoid coplanar intersections */
+  positionOffset?: { x?: number; y?: number; z?: number };
 }
 
 export const NODE_BEHAVIOUR: Partial<Record<SemanticNodeKey, NodeBehaviour>> = {
