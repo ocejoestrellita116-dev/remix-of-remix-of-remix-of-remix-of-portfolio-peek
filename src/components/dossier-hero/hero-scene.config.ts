@@ -47,11 +47,11 @@ export interface NodeBehaviour {
 
 export const NODE_BEHAVIOUR: Partial<Record<SemanticNodeKey, NodeBehaviour>> = {
   levelBase:   { receiveShadow: true, polygonOffsetFactor: 0 },
-  sudo:        { castShadow: true, float: { amp: 0.04, speed: 0.4 }, polygonOffsetFactor: 0.15 },
+  sudo:        { castShadow: true, float: { amp: 0.04, speed: 0.4 }, polygonOffsetFactor: 0.15, positionOffset: { y: 0.001 } },
   sudoHead:    { castShadow: true, pointerTilt: true, polygonOffsetFactor: 0.2 },
-  cameraProp:  { castShadow: true, pointerShift: { x: 0.05, y: 0.03 }, polygonOffsetFactor: 0.35 },
-  cactus:      { castShadow: true, float: { amp: 0.02, speed: 0.25 }, polygonOffsetFactor: 0.45 },
-  pyramid:     { castShadow: true, float: { amp: 0.03, speed: 0.3 }, polygonOffsetFactor: 0.5 },
+  cameraProp:  { castShadow: true, pointerShift: { x: 0.05, y: 0.03 }, polygonOffsetFactor: 0.35, positionOffset: { y: 0.0015 } },
+  cactus:      { castShadow: true, float: { amp: 0.02, speed: 0.25 }, polygonOffsetFactor: 0.45, positionOffset: { y: 0.002 } },
+  pyramid:     { castShadow: true, float: { amp: 0.03, speed: 0.3 }, polygonOffsetFactor: 0.5, positionOffset: { y: 0.0025 } },
   reactLogo:   { castShadow: true, float: { amp: 0.05, speed: 0.35 }, polygonOffsetFactor: 0.6 },
 };
 

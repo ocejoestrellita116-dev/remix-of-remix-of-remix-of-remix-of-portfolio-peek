@@ -99,9 +99,18 @@ export function useGLBScene(): GLBLoaderResult {
       node.matrix.copy(worldMatrix);
       node.matrix.decompose(node.position, node.quaternion, node.scale);
 
-      // Assign to group
-      const groupId = GROUP_ASSIGNMENT[key as SemanticNodeKey];
+      const semanticKey = key as SemanticNodeKey;
+      const behaviour = NODE_BEHAVIOUR[semanticKey];
+      if (behaviour?.positionOffset) {
+        node.position.x += behaviour.positionOffset.x ?? 0;
+        node.position.y += behaviour.positionOffset.y ?? 0;
+        node.position.z += behaviour.positionOffset.z ?? 0;
+      }
+
+      // Assign to group and stabilize draw order by depth layer
+      const groupId = GROUP_ASSIGNMENT[semanticKey];
       if (groupId) {
+        node.renderOrder = groupId === 'heroArtifact' ? 1 : groupId === 'support' ? 2 : 3;
         grouped[groupId].push(node);
       }
     });
