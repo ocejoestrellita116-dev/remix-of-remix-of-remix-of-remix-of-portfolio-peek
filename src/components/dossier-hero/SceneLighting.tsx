@@ -32,6 +32,7 @@ export const SceneLighting = React.memo(function SceneLighting() {
         shadow-camera-top={4}
         shadow-camera-bottom={-4}
         shadow-bias={LIGHTING.key.shadowBias}
+        shadow-normalBias={LIGHTING.key.normalBias}
       />
 
       <directionalLight

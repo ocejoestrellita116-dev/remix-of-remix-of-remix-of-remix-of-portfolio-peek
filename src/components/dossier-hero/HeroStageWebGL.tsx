@@ -111,6 +111,7 @@ export const HeroStageWebGL = React.memo(function HeroStageWebGL(props: StagePro
         gl={{
           antialias: true,
           alpha: false,
+          logarithmicDepthBuffer: true,
           powerPreference: 'high-performance',
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.2,
