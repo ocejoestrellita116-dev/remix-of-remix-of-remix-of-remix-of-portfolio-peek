@@ -52,14 +52,21 @@ export function useGLBScene(): GLBLoaderResult {
           const mat = mesh.material;
           if (mat && (mat as THREE.MeshStandardMaterial).isMeshStandardMaterial) {
             const stdMat = mat as THREE.MeshStandardMaterial;
-            if (stdMat.envMapIntensity < 1) stdMat.envMapIntensity = 1;
+            // Keep original envMapIntensity from GLB — don't force increase
             if (stdMat.roughness > 0.85) stdMat.roughness -= 0.1;
             if (stdMat.metalness > 0.85) stdMat.metalness = 0.85;
 
-            // Polygon offset to resolve Z-fighting on coplanar surfaces
+            // Differentiated polygon offset by group to resolve Z-fighting
+            const groupId = GROUP_ASSIGNMENT[semantic];
             stdMat.polygonOffset = true;
-            stdMat.polygonOffsetFactor = 1;
             stdMat.polygonOffsetUnits = 1;
+            if (groupId === 'heroArtifact') {
+              stdMat.polygonOffsetFactor = 0;
+            } else if (groupId === 'support') {
+              stdMat.polygonOffsetFactor = 2;
+            } else {
+              stdMat.polygonOffsetFactor = 3;
+            }
 
             // Anisotropic filtering + texture quality on all map channels
             const TEX_KEYS: (keyof THREE.MeshStandardMaterial)[] = [

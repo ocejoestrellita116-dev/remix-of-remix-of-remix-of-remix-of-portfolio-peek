@@ -100,7 +100,8 @@ export const LIGHTING = {
     color: '#fff4e0',
     position: [3, 5, 4] as [number, number, number],
     shadowMapSize: 256,
-    shadowBias: -0.002,
+    shadowBias: -0.003,
+    normalBias: 0.02,
   },
   fill: {
     intensity: 0.5,
