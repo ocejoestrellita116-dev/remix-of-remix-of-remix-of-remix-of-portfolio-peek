@@ -52,32 +52,32 @@ export function useGLBScene(): GLBLoaderResult {
           const mat = mesh.material;
           if (mat && (mat as THREE.MeshStandardMaterial).isMeshStandardMaterial) {
             const stdMat = mat as THREE.MeshStandardMaterial;
-            // Keep original envMapIntensity from GLB — don't force increase
-            if (stdMat.roughness > 0.85) stdMat.roughness -= 0.1;
-            if (stdMat.metalness > 0.85) stdMat.metalness = 0.85;
 
-            // Force front-side only rendering to eliminate back-face white edges
+            // Keep GLB-authored values, only clamp extreme specular response
+            if (stdMat.roughness < 0.08) stdMat.roughness = 0.08;
+            if (stdMat.metalness > 0.75) stdMat.metalness = 0.75;
+
+            // Render front faces only to avoid bright back-face edge artifacts
             stdMat.side = THREE.FrontSide;
 
-            // Per-node polygon offset from config to resolve Z-fighting
+            // Per-node polygon offset (small values only, disabled for base mesh)
             const nodeBehaviour = NODE_BEHAVIOUR[semantic];
             const offsetFactor = nodeBehaviour?.polygonOffsetFactor ?? 0;
-            stdMat.polygonOffset = true;
-            stdMat.polygonOffsetFactor = offsetFactor;
-            stdMat.polygonOffsetUnits = 1;
+            if (offsetFactor !== 0) {
+              stdMat.polygonOffset = true;
+              stdMat.polygonOffsetFactor = offsetFactor;
+              stdMat.polygonOffsetUnits = 0.5;
+            } else {
+              stdMat.polygonOffset = false;
+            }
 
-            // Anisotropic filtering + texture quality on all map channels
+            // Preserve GLTF texture filtering to avoid UV seam bleeding in mip levels
             const TEX_KEYS: (keyof THREE.MeshStandardMaterial)[] = [
               'map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap', 'emissiveMap',
             ];
             for (const key of TEX_KEYS) {
               const tex = stdMat[key] as THREE.Texture | null;
-              if (tex) {
-                tex.anisotropy = 16;
-                tex.minFilter = THREE.LinearMipmapLinearFilter;
-                tex.magFilter = THREE.LinearFilter;
-                tex.needsUpdate = true;
-              }
+              if (tex) tex.needsUpdate = true;
             }
 
             stdMat.needsUpdate = true;
@@ -99,9 +99,18 @@ export function useGLBScene(): GLBLoaderResult {
       node.matrix.copy(worldMatrix);
       node.matrix.decompose(node.position, node.quaternion, node.scale);
 
-      // Assign to group
-      const groupId = GROUP_ASSIGNMENT[key as SemanticNodeKey];
+      const semanticKey = key as SemanticNodeKey;
+      const behaviour = NODE_BEHAVIOUR[semanticKey];
+      if (behaviour?.positionOffset) {
+        node.position.x += behaviour.positionOffset.x ?? 0;
+        node.position.y += behaviour.positionOffset.y ?? 0;
+        node.position.z += behaviour.positionOffset.z ?? 0;
+      }
+
+      // Assign to group and stabilize draw order by depth layer
+      const groupId = GROUP_ASSIGNMENT[semanticKey];
       if (groupId) {
+        node.renderOrder = groupId === 'heroArtifact' ? 1 : groupId === 'support' ? 2 : 3;
         grouped[groupId].push(node);
       }
     });
