@@ -39,6 +39,8 @@ export interface NodeBehaviour {
   float?: { amp: number; speed: number };
   /** Pointer-driven lateral shift */
   pointerShift?: { x: number; y: number };
+  /** Per-node polygon offset factor to resolve Z-fighting */
+  polygonOffsetFactor?: number;
 }
 
 export const NODE_BEHAVIOUR: Partial<Record<SemanticNodeKey, NodeBehaviour>> = {
